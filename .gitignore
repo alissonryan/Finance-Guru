@@ -1,0 +1,68 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+*.py[cod]
+*$py.class
+*.so
+build/
+dist/
+wheels/
+*.egg-info
+.eggs/
+
+# Virtual environments
+.venv
+venv/
+env/
+.Python
+
+# Environment variables
+.env
+.env.local
+*.env
+
+# Data files
+data/raw/*
+data/processed/*
+!data/sample/*
+*.csv
+*.xlsx
+*.xls
+!research/finance/*.csv
+
+# Reports
+reports/*.html
+reports/*.pdf
+reports/temp/*
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb_checkpoints
+
+# Testing
+.coverage
+htmlcov/
+.pytest_cache/
+.tox/
+
+# Logs
+*.log
+logs/
+
+# Private financial data
+private/
+sensitive/
+*.key
+*.pem
+credentials/
+
+# Cache
+.cache/
+.streamlit/
