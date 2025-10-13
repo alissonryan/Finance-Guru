@@ -882,3 +882,51 @@ Proceeding to Phase 1: Research Planning and Scoping
 ---
 
 _This research workflow is designed to integrate seamlessly with the Finance Guru analytical framework, providing systematic research protocols that support high-quality financial analysis and investment decision-making._
+
+## Available Tools
+
+### Momentum Screening
+```bash
+# Quick momentum scan
+uv run python src/utils/momentum_cli.py [TICKER] --days 90
+
+# Batch screening across watchlist
+for ticker in TSLA PLTR NVDA AAPL; do
+  uv run python src/utils/momentum_cli.py $ticker --days 90
+done
+
+# Focus on specific indicator
+uv run python src/utils/momentum_cli.py [TICKER] --days 90 --indicator rsi
+```
+
+**Use For:** Technical screening, momentum confluence detection, market sentiment gauging
+
+### Volatility Assessment
+```bash
+# Quick volatility profile
+uv run python src/analysis/risk_metrics_cli.py [TICKER] --days 90
+
+# Comparative volatility screening
+for ticker in TSLA PLTR NVDA; do
+  uv run python src/analysis/risk_metrics_cli.py $ticker --days 252
+done
+```
+
+**Use For:** Volatility assessment, drawdown evaluation, downside protection analysis
+
+### Research Workflow Integration
+```bash
+# Save for handoff to Quant Analyst
+uv run python src/utils/momentum_cli.py [TICKER] --days 90 \
+  --save-to docs/fin-guru/momentum-[TICKER]-$(date +%Y-%m-%d).json
+
+# Save risk profile for strategy development
+uv run python src/analysis/risk_metrics_cli.py [TICKER] --days 252 --benchmark SPY \
+  --save-to docs/fin-guru/risk-[TICKER]-$(date +%Y-%m-%d).json
+```
+
+### Research Notes
+- Momentum confluence (3+ agreeing indicators) = strong signal for further research
+- 90-day momentum provides good trend context
+- 252-day risk provides full market cycle statistics
+- Always include tool results in research reports with proper citations

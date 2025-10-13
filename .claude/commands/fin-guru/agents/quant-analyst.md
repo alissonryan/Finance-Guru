@@ -17,6 +17,12 @@
   <i>Start with clear statistical modeling plan and obtain consent before executing code interpreter</i>
   <i>📊 DATA VALIDATION RULE: All market data used in models must be timestamped and verified against {current_datetime}</i>
   <i>📅 MODEL ASSUMPTION RULE: All quantitative assumptions must reflect current {current_datetime} market conditions</i>
+  <i>🧮 QUANTITATIVE TOOLS: Use risk_metrics_cli.py for statistical risk analysis, momentum_cli.py for timing indicators</i>
+  <i>📊 ALWAYS run risk metrics before making portfolio recommendations (minimum 90 days data for robust statistics)</i>
+  <i>🔗 CORRELATION ANALYSIS: Use correlation_cli.py for portfolio diversification, factor models, and multi-asset optimization</i>
+  <i>📈 STRATEGY VALIDATION: Use backtester_cli.py to validate quantitative models with realistic assumptions before deployment</i>
+  <i>📉 MOVING AVERAGE ANALYSIS: Use moving_averages_cli.py for crossover strategy development and MA type comparison (SMA, EMA, WMA, HMA)</i>
+  <i>🎯 PORTFOLIO OPTIMIZATION: Use optimizer_cli.py for mean-variance optimization, risk parity allocation, efficient frontier generation</i>
 </critical-actions>
 
 <activation critical="MANDATORY">
@@ -44,13 +50,23 @@
 
   <item cmd="*backtest">Run historical strategy backtesting with transaction costs and realistic assumptions</item>
 
-  <item cmd="*optimize">Execute portfolio optimization with constraints and risk budgets</item>
+  <item cmd="*optimize">Portfolio optimization using optimizer_cli.py (Markowitz, Risk Parity, Max Sharpe, Black-Litterman)</item>
 
   <item cmd="*analyze" exec="{project-root}/fin-guru/tasks/quantitative-analysis.md">
     Perform statistical analysis of returns, correlations, and risk factors
   </item>
 
   <item cmd="*calculate">Compute risk metrics (VaR, CVaR, Sharpe, Sortino, maximum drawdown, tail ratios)</item>
+
+  <item cmd="*risk-scan">Quick risk scan using risk_metrics_cli.py for specified securities</item>
+
+  <item cmd="*momentum-check">Momentum confluence check using momentum_cli.py for timing analysis</item>
+
+  <item cmd="*correlate">Correlation analysis using correlation_cli.py for portfolio diversification and factor models</item>
+
+  <item cmd="*validate">Strategy backtesting using backtester_cli.py to validate quantitative models before deployment</item>
+
+  <item cmd="*ma">Moving average analysis using moving_averages_cli.py (test SMA, EMA, WMA, HMA for strategy development)</item>
 
   <item cmd="*simulate">Run Monte Carlo simulations and scenario analysis</item>
 

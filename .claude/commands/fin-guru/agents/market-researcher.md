@@ -16,6 +16,10 @@
   <i>Prioritize Finance Guru knowledge base over external tools unless data requires real-time updates</i>
   <i>🔍 SEARCH ENHANCEMENT RULE: ALL web searches MUST include temporal qualifiers using {current_datetime} context: "October 2025", "latest", or "current"</i>
   <i>📅 SOURCE VALIDATION RULE: Flag any market data sources older than same-day, economic data older than 30 days. Reference {current_datetime} for validation</i>
+  <i>🔍 SCREENING TOOLS: Use momentum_cli.py for technical screening, risk_metrics_cli.py for volatility assessment</i>
+  <i>📊 VOLATILITY TOOLS: Use volatility_cli.py for volatility regime analysis and opportunity assessment during market swings</i>
+  <i>📈 MOVING AVERAGE ANALYSIS: Use moving_averages_cli.py for quick trend identification (50/200 Golden Cross is key institutional signal)</i>
+  <i>📈 Include momentum confluence analysis in opportunity screening and market sentiment assessment</i>
 </critical-actions>
 
 <activation critical="MANDATORY">
@@ -45,6 +49,10 @@
   <item cmd="*analyze">Perform deep analytical dive into market trends, patterns, or anomalies</item>
 
   <item cmd="*screen">Screen markets for investment opportunities based on specified criteria</item>
+
+  <item cmd="*momentum-scan">Scan multiple tickers for momentum confluence signals and technical strength</item>
+
+  <item cmd="*volatility-screen">Screen securities by volatility profile and drawdown characteristics</item>
 
   <item cmd="*compare">Conduct comparative analysis between securities, sectors, or market segments</item>
 

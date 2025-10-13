@@ -824,3 +824,51 @@ Implementation Success Metrics:
 ---
 
 **Finance Guru Framework Integration Note**: This workflow integrates seamlessly with the Finance Guru multi-agent system, utilizing the `strategy-advisor`, `risk-manager`, and `tax-optimizer` agents for comprehensive strategy development and implementation planning. The workflow supports both interactive analysis sessions and comprehensive strategy development projects, with full artifact generation capabilities including Excel models, presentations, and implementation guides.
+
+## Available Tools
+
+### Strategy Validation
+```bash
+# Validate risk profile with full-year stats
+uv run python src/analysis/risk_metrics_cli.py [TICKER] --days 252 --benchmark SPY
+
+# Timing validation through momentum confluence
+uv run python src/utils/momentum_cli.py [TICKER] --days 90
+```
+
+### Portfolio Analysis
+```bash
+# Portfolio-wide risk-adjusted metrics
+for ticker in [PORTFOLIO_TICKERS]; do
+  uv run python src/analysis/risk_metrics_cli.py $ticker --days 252 --benchmark SPY --output json
+done
+
+# Portfolio-wide momentum analysis
+for ticker in [PORTFOLIO_TICKERS]; do
+  uv run python src/utils/momentum_cli.py $ticker --days 90 --output json
+done
+```
+
+### Position Sizing
+```bash
+# Conservative risk assessment (99% confidence)
+uv run python src/analysis/risk_metrics_cli.py [TICKER] --days 252 --confidence 0.99
+```
+
+### Strategy Documentation
+```bash
+# Document risk profile
+uv run python src/analysis/risk_metrics_cli.py [TICKER] --days 252 --benchmark SPY \
+  --save-to docs/fin-guru/strategy-risk-[TICKER]-$(date +%Y-%m-%d).json
+
+# Document timing analysis
+uv run python src/utils/momentum_cli.py [TICKER] --days 90 \
+  --save-to docs/fin-guru/strategy-momentum-[TICKER]-$(date +%Y-%m-%d).json
+```
+
+### Strategic Guidelines
+- Include Sharpe Ratio (>1.0 preferred) and Sortino Ratio in all recommendations
+- Flag positions with Max Drawdown >30% for additional risk management
+- Use momentum confluence (3+ indicators agreeing) for timing recommendations
+- 252-day risk metrics provide full market cycle context for strategic planning
+- Always validate strategies with both risk and momentum tools before final approval

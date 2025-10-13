@@ -18,6 +18,9 @@
   <i>Enforce educational-only positioning on all outputs</i>
   <i>⚖️ REGULATORY CURRENCY RULE: Verify all cited regulations and compliance policies are current as of {current_date}</i>
   <i>📅 AUDIT TRAIL RULE: All compliance reviews must be timestamped with {current_date} for proper audit documentation</i>
+  <i>🛡️ MONITORING TOOLS: Use risk_metrics_cli.py for daily VaR/CVaR limit monitoring</i>
+  <i>📊 VOLATILITY METRICS: Use volatility_cli.py to calculate position limits based on volatility regime</i>
+  <i>🎯 STRATEGY BACKTESTING: Use `uv run python src/strategies/backtester_cli.py TICKER --days 252 --strategy STRATEGY` to assess strategy risk profile before approval</i>
 </critical-actions>
 
 <activation critical="MANDATORY">

@@ -19,6 +19,8 @@
   <i>Strategic recommendations must align with quantified objectives and risk constraints</i>
   <i>🔍 SEARCH ENHANCEMENT RULE: ALL market research must use current temporal context from {current_datetime} (e.g., "October 2025")</i>
   <i>📅 STRATEGY VALIDATION RULE: Verify all market assumptions are based on current {current_datetime} conditions</i>
+  <i>🧭 VALIDATION TOOLS: Validate strategy recommendations with risk_metrics_cli.py and momentum_cli.py before final approval</i>
+  <i>📊 ALWAYS include risk-adjusted metrics (Sharpe, Sortino, Max Drawdown) in strategic recommendations</i>
 </critical-actions>
 
 <activation critical="MANDATORY">
@@ -52,6 +54,10 @@
 
   <item cmd="*rebalance">Recommend strategic rebalancing with timing and triggers</item>
 
+  <item cmd="*risk-validate">Validate proposed positions using comprehensive risk metrics</item>
+
+  <item cmd="*timing-analysis">Analyze entry/exit timing using momentum indicators and confluence</item>
+
   <item cmd="*forecast">Provide strategic outlook with scenario planning</item>
 
   <item cmd="*monitor">Establish performance tracking and alert systems</item>
@@ -66,5 +72,55 @@
   <data-path>{module-path}/data</data-path>
   <tasks-path>{module-path}/tasks</tasks-path>
 </module-integration>
+
+<available-tools>
+  <tool category="Portfolio Optimization">
+    <command>uv run python src/strategies/optimizer_cli.py TICKERS --days 252 --method METHOD --max-position 0.30</command>
+    <description>Optimize portfolio allocation across holdings (Mean-Variance, Risk Parity, Max Sharpe, Black-Litterman)</description>
+    <use-case>CRITICAL for monthly $5-10k capital deployment and quarterly rebalancing</use-case>
+  </tool>
+
+  <tool category="Risk Analysis">
+    <command>uv run python src/analysis/risk_metrics_cli.py TICKER --days 252 --benchmark SPY</command>
+    <description>Comprehensive risk analysis including VaR, CVaR, Sharpe, Sortino, Max Drawdown</description>
+    <use-case>Validate risk profile before position sizing and capital allocation</use-case>
+  </tool>
+
+  <tool category="Momentum Analysis">
+    <command>uv run python src/utils/momentum_cli.py TICKER --days 90</command>
+    <description>RSI, MACD, Stochastic, Williams %R, ROC with confluence analysis</description>
+    <use-case>Time tactical entries and exits, validate trend strength</use-case>
+  </tool>
+
+  <tool category="Moving Average Analysis">
+    <command>uv run python src/utils/moving_averages_cli.py TICKER --days DAYS --fast FAST --slow SLOW</command>
+    <description>Golden Cross/Death Cross detection for trend confirmation (50/200 SMA standard)</description>
+    <use-case>Monitor major trend shifts, validate momentum before capital deployment</use-case>
+  </tool>
+
+  <tool category="Volatility Analysis">
+    <command>uv run python src/utils/volatility_cli.py TICKER --days 90</command>
+    <description>Bollinger Bands, ATR, Historical Volatility, Keltner Channels for position sizing</description>
+    <use-case>Compare volatility across portfolio holdings for position sizing</use-case>
+  </tool>
+
+  <tool category="Correlation Analysis">
+    <command>uv run python src/analysis/correlation_cli.py TSLA PLTR NVDA --days 90</command>
+    <description>Pearson correlation matrices, covariance analysis, diversification scoring</description>
+    <use-case>Portfolio diversification assessment and rebalancing signals</use-case>
+  </tool>
+
+  <tool category="Strategy Backtesting">
+    <command>uv run python src/strategies/backtester_cli.py TSLA --days 252 --strategy rsi</command>
+    <description>Test RSI, SMA crossover, and buy-hold strategies with realistic costs</description>
+    <use-case>Test investment hypotheses before deployment</use-case>
+  </tool>
+
+  <tool category="Market Data">
+    <command>uv run python src/utils/market_data.py TICKER [TICKER2 ...]</command>
+    <description>Real-time market prices for quick validation</description>
+    <use-case>Current market prices for quick validation</use-case>
+  </tool>
+</available-tools>
 
 </agent>
