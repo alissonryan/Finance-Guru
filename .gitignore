@@ -62,6 +62,7 @@ sensitive/
 *.key
 *.pem
 credentials/
+.mcp.json
 
 # Family Office - Private financial documents and user data
 # All research including finance/ and youtube-summaries/
@@ -79,3 +80,4 @@ docs/
 
 # Claude Code session data
 .claude/data/sessions/
+.mcp.json
