@@ -25,115 +25,6 @@
                 ]
             }
         },
-        "backend-dev-guidelines": {
-            "type": "domain",
-            "enforcement": "suggest",
-            "priority": "high",
-            "description": "Backend development patterns for Python/FastAPI/SQLAlchemy",
-            "promptTriggers": {
-                "keywords": [
-                    "backend",
-                    "backend development",
-                    "API",
-                    "endpoint",
-                    "route",
-                    "router",
-                    "routing",
-                    "FastAPI",
-                    "SQLAlchemy",
-                    "database model",
-                    "schema",
-                    "Pydantic",
-                    "service",
-                    "middleware",
-                    "validation",
-                    "async",
-                    "await",
-                    "Celery",
-                    "task",
-                    "tools",
-                    "python",
-                    "monte-carlo",
-                    "migration",
-                    "alembic",
-                    "dependency injection",
-                    "Depends"
-                ],
-                "intentPatterns": [
-                    "(create|add|implement|build).*?(route|endpoint|API|controller|service|repository)",
-                    "(fix|handle|debug).*?(error|exception|backend)",
-                    "(add|implement).*?(middleware|validation|error.*?handling)",
-                    "(organize|structure|refactor).*?(backend|service|API)",
-                    "(how to|best practice).*?(backend|route|controller|service)"
-                ]
-            },
-            "fileTriggers": {
-                "pathPatterns": [
-                    "backend/app/**/*.py",
-                    "backend/app/api/**/*.py",
-                    "backend/app/models/**/*.py",
-                    "backend/app/schemas/**/*.py",
-                    "backend/app/services/**/*.py",
-                    "backend/app/core/**/*.py",
-                    "backend/app/middleware/**/*.py",
-                    "backend/app/tasks/**/*.py"
-                ],
-                "pathExclusions": [
-                    "backend/app/tests/**/*.py",
-                    "backend/alembic/**/*.py",
-                    "backend/scripts/**/*.py",
-                    "**/__pycache__/**",
-                    "**/*.pyc"
-                ],
-                "contentPatterns": [
-                    "from fastapi import",
-                    "import sqlalchemy",
-                    "from sqlalchemy",
-                    "@app\\.",
-                    "@router\\.",
-                    "def (get|post|put|delete|patch)_",
-                    "class.*BaseModel",
-                    "Depends\\(",
-                    "async def"
-                ]
-            }
-        },
-        "route-tester": {
-            "type": "domain",
-            "enforcement": "suggest",
-            "priority": "high",
-            "description": "Testing authenticated API routes with JWT cookie-based auth",
-            "promptTriggers": {
-                "keywords": [
-                    "test route",
-                    "test endpoint",
-                    "test API",
-                    "route testing",
-                    "API testing",
-                    "authenticated route",
-                    "JWT testing",
-                    "cookie auth",
-                    "test with auth"
-                ],
-                "intentPatterns": [
-                    "(test|debug|verify).*?(route|endpoint|API)",
-                    "(how to|how do I).*?test.*?(route|endpoint|API)",
-                    "test.*?(authenticated|auth|JWT|cookie)"
-                ]
-            },
-            "fileTriggers": {
-                "pathPatterns": [
-                    "backend/app/api/**/*.py",
-                    "**/test-*.py",
-                    "backend/app/tests/test_*.py"
-                ],
-                "contentPatterns": [
-                    "@router\\.(get|post|put|delete|patch)",
-                    "@app\\.(get|post|put|delete|patch)",
-                    "async def (get|post|put|delete|patch)_"
-                ]
-            }
-        },
         "error-tracking": {
             "type": "domain",
             "enforcement": "suggest",
@@ -168,6 +59,144 @@
                     "sentry_sdk\\.",
                     "capture_exception",
                     "capture_message"
+                ]
+            }
+        },
+        "portfolio-syncing": {
+            "type": "domain",
+            "enforcement": "block",
+            "priority": "critical",
+            "description": "Import and sync portfolio data from Fidelity CSV exports to Google Sheets Portfolio Positions. Handles safety checks, position updates, and formula validation.",
+            "promptTriggers": {
+                "keywords": [
+                    "import fidelity",
+                    "fidelity csv",
+                    "sync portfolio",
+                    "update positions",
+                    "portfolio import",
+                    "csv import",
+                    "portfolio sync",
+                    "fidelity export",
+                    "import csv",
+                    "sync positions"
+                ],
+                "intentPatterns": [
+                    "(import|update|sync|load).*?(fidelity|portfolio|positions|csv)",
+                    "new.*?(fidelity csv|portfolio export)",
+                    "(update|refresh).*?(portfolio|positions).*?(fidelity|csv)",
+                    "(import|sync).*?(portfolio_positions|positions csv)"
+                ]
+            },
+            "fileTriggers": {
+                "pathPatterns": [
+                    "notebooks/updates/Portfolio_Positions_*.csv",
+                    "notebooks/updates/Balances_for_Account_*.csv"
+                ],
+                "contentPatterns": [
+                    "Symbol,Quantity",
+                    "Average Cost Basis",
+                    "Portfolio_Positions",
+                    "Account Number,Account Name,Symbol"
+                ]
+            }
+        },
+        "dividend-tracking": {
+            "type": "domain",
+            "enforcement": "suggest",
+            "priority": "high",
+            "description": "Sync dividend portfolio data between Portfolio Positions and Dividend Tracker. Cross-references Layer 2 holdings, updates shares, calculates income.",
+            "promptTriggers": {
+                "keywords": [
+                    "dividend tracker",
+                    "sync dividends",
+                    "update dividends",
+                    "dividend income",
+                    "layer 2 income",
+                    "dividend portfolio",
+                    "drip status",
+                    "dividend payments",
+                    "expected dividends",
+                    "monthly income"
+                ],
+                "intentPatterns": [
+                    "(sync|update|refresh).*?(dividend tracker|dividends)",
+                    "(calculate|check).*?(dividend income|expected dividends)",
+                    "update.*?(layer 2|income portfolio)",
+                    "(add|track).*?(dividend fund|income fund)"
+                ]
+            },
+            "fileTriggers": {
+                "pathPatterns": [
+                    "fin-guru/data/*dividend*.md",
+                    "docs/fin-guru/strategies/active/*dividend*.md",
+                    "fin-guru/data/user-profile.yaml"
+                ]
+            }
+        },
+        "margin-management": {
+            "type": "domain",
+            "enforcement": "block",
+            "priority": "critical",
+            "description": "Update Margin Dashboard with Fidelity balances. Calculates margin metrics, coverage ratios, safety thresholds, and provides scaling recommendations.",
+            "promptTriggers": {
+                "keywords": [
+                    "margin dashboard",
+                    "update margin",
+                    "margin balance",
+                    "margin strategy",
+                    "margin living",
+                    "coverage ratio",
+                    "margin scaling",
+                    "margin interest",
+                    "portfolio to margin ratio",
+                    "margin draw"
+                ],
+                "intentPatterns": [
+                    "(update|sync|check).*?(margin|margin balance|margin dashboard)",
+                    "(calculate|check).*?(coverage ratio|margin interest)",
+                    "margin.*?(strategy|scaling|alert|threshold)",
+                    "update.*?(balances|fidelity balances)"
+                ]
+            },
+            "fileTriggers": {
+                "pathPatterns": [
+                    "notebooks/updates/Balances_for_Account_*.csv",
+                    "fin-guru/data/*margin*.md",
+                    "docs/fin-guru/strategies/active/*margin*.md"
+                ]
+            }
+        },
+        "formula-protection": {
+            "type": "guardrail",
+            "enforcement": "block",
+            "priority": "critical",
+            "description": "Prevent accidental modification of sacred spreadsheet formulas. Blocks edits to GOOGLEFINANCE, calculated columns. Allows only IFERROR wrappers and safe repairs.",
+            "promptTriggers": {
+                "keywords": [
+                    "update formula",
+                    "modify formula",
+                    "change formula",
+                    "fix formula",
+                    "edit cell",
+                    "update column c",
+                    "update column d",
+                    "update column e",
+                    "googlefinance",
+                    "formula error",
+                    "#n/a",
+                    "#div/0!",
+                    "#ref!"
+                ],
+                "intentPatterns": [
+                    "(update|modify|change|edit|fix).*?(formula|column [C-F]|column [H-S])",
+                    "(change|update).*?(last price|current value|total g/l)",
+                    "fix.*?(#N/A|#DIV/0!|#REF!|formula error)",
+                    "(edit|modify|update).*?(spreadsheet formula|google sheets formula)"
+                ]
+            },
+            "fileTriggers": {
+                "pathPatterns": [
+                    "fin-guru/data/spreadsheet-*.md"
                 ]
             }
         }
