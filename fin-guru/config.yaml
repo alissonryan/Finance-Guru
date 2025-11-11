@@ -84,13 +84,21 @@ checklists:
 
 # Data & Knowledge Base
 data_files:
-  - system-context.md
-  - user-profile.yaml
-  - risk-framework.md
-  - compliance-policy.md
-  - margin-strategy.md
-  - dividend-framework.md
-  - cashflow-policy.md
+  count: 13
+  list:
+    - system-context.md
+    - user-profile.yaml
+    - risk-framework.md
+    - compliance-policy.md
+    - margin-strategy.md
+    - tax-optimization.md
+    - spreadsheet-architecture.md
+    - spreadsheet-quick-ref.md
+    - analytical-framework.md
+    - brainstorming-techniques.md
+    - elicitation-methods.md
+    - guru-kb.md
+    - tool-specifications.md
 
 # Framework Configuration
 framework:

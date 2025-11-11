@@ -1,7 +1,7 @@
 # Finance Guru™ System Context
 <!-- Private Family Office Configuration | v1.0 | 2025-09-25 -->
 
-## 🏛️ This is Your Private Family Office
+## 🏛️ This is YOUR Private Family Office
 
 ### Core Understanding
 - Finance Guru™ is YOUR personal AI-powered family office
@@ -59,6 +59,33 @@ Key metrics from YOUR assessment:
 - Investment Capacity: $5,000-10,500/month
 - Risk Profile: Aggressive
 - Focus Areas: Margin strategies, dividend optimization, tax efficiency
+
+## 📊 Your Google Sheets Portfolio Tracker
+
+**Spreadsheet ID**: `1HtHRP3CbnOePb8RQ0RwzFYOQxk0uWC6L8ZMJeQYfWk4`
+**URL**: https://docs.google.com/spreadsheets/d/1HtHRP3CbnOePb8RQ0RwzFYOQxk0uWC6L8ZMJeQYfWk4/edit
+
+This is YOUR live portfolio tracking spreadsheet with 6 tabs:
+- **Portfolio Positions** - Master holdings with prices, gains/losses, layer classification
+- **Dividend Tracker** - Monthly dividend income monitoring and DRIP status
+- **Margin Dashboard** - Margin usage, interest costs, coverage ratios, scaling alerts
+- **Cash Flow Monitor** - Deposits, withdrawals, cash movements
+- **Weekly Review** - Performance summaries (future: auto-generated)
+- **Bitcoin Enhanced Growth - Friend** - Special tracking (external data)
+
+**Architecture Documentation**:
+- 📖 **Full Guide**: `fin-guru/data/spreadsheet-architecture.md` - Complete rules, workflows, safety guardrails
+- ⚡ **Quick Reference**: `fin-guru/data/spreadsheet-quick-ref.md` - Agent permission matrix and pre-flight checklist
+
+**Key Principles for Agents**:
+- **Data Source**: Fidelity CSV exports (`notebooks/updates/`) are authoritative for ticker, quantity, and avg cost basis
+- **Price Data**: Google Finance formulas in Column C auto-update prices - DO NOT TOUCH
+- **Portfolio Positions**: WRITABLE columns = A (Ticker), B (Quantity), G (Avg Cost Basis) from CSV - all others are formula-maintained
+- **Agent Permissions**: Quant = read-only, Builder = write-enabled, specialists have tab-specific access
+- **Safety Gates**: Stop on position mismatches, large changes (>10%), cost basis changes (>20%), formula errors (3+), margin jumps (>$5k)
+- **Formula Protection**: Never modify working formulas - only repair broken ones with IFERROR wrappers
+- **Layer Classification**: Pattern-based auto-assignment (dividend funds → Layer 2, growth → Layer 1, hedges → Layer 3)
+- **Alpha Vantage**: Columns F, N-P use market data API (partially working) - troubleshooting in progress
 
 ## 📂 Your Documentation Center
 
