@@ -39,6 +39,12 @@ These files are automatically loaded into context at session start:
 **Path**: `notebooks/updates/`
 **Contains**: Latest Fidelity account balances, positions, transaction history
 
+**File Patterns**:
+- Balances: `Balances_for_Account_Z05724592.csv` (exact match)
+- Positions: `Portfolio_Positions_MMM-DD-YYYY.csv` (e.g., `Portfolio_Positions_Nov-05-2025.csv`)
+- The hook automatically finds the **latest positions file by date** in the filename
+- Files older than 7 days trigger an update alert at session start
+
 ### 4. System Context
 **Path**: `fin-guru/data/system-context.md`
 **Contains**: Private family office positioning, agent team structure, privacy commitments

@@ -39,11 +39,90 @@ function getLatestFile(dir: string, pattern: RegExp): string | null {
         mtime: statSync(join(dir, f)).mtime.getTime()
       }))
       .sort((a, b) => b.mtime - a.mtime); // newest first
-    
+
     return files.length > 0 ? files[0].path : null;
   } catch (err) {
     return null;
   }
+}
+
+function parsePositionsFileDate(filename: string): Date | null {
+  // Pattern: Portfolio_Positions_Nov-05-2025.csv
+  const match = filename.match(/Portfolio_Positions_([A-Za-z]{3})-(\d{2})-(\d{4})\.csv$/);
+  if (!match) return null;
+
+  const [, month, day, year] = match;
+  const monthMap: Record<string, number> = {
+    'Jan': 0, 'Feb': 1, 'Mar': 2, 'Apr': 3, 'May': 4, 'Jun': 5,
+    'Jul': 6, 'Aug': 7, 'Sep': 8, 'Oct': 9, 'Nov': 10, 'Dec': 11
+  };
+
+  const monthNum = monthMap[month];
+  if (monthNum === undefined) return null;
+
+  return new Date(parseInt(year), monthNum, parseInt(day));
+}
+
+function getLatestPositionsFile(dir: string): string | null {
+  try {
+    const files = readdirSync(dir)
+      .filter(f => /^Portfolio_Positions_[A-Za-z]{3}-\d{2}-\d{4}\.csv$/.test(f))
+      .map(f => ({
+        name: f,
+        path: join(dir, f),
+        date: parsePositionsFileDate(f)
+      }))
+      .filter(f => f.date !== null)
+      .sort((a, b) => (b.date!.getTime() - a.date!.getTime())); // newest first by date in filename
+
+    return files.length > 0 ? files[0].path : null;
+  } catch (err) {
+    return null;
+  }
+}
+
+function isFileRecent(filePath: string, maxAgeDays: number = 7): boolean {
+  try {
+    const stats = statSync(filePath);
+    const ageMs = Date.now() - stats.mtime.getTime();
+    const ageDays = ageMs / (1000 * 60 * 60 * 24);
+    return ageDays <= maxAgeDays;
+  } catch (err) {
+    return false;
+  }
+}
+
+function generateUpdateAlert(missingBalances: boolean, missingPositions: boolean, outdatedBalances: boolean, outdatedPositions: boolean): string {
+  const alerts: string[] = [];
+
+  if (missingBalances) {
+    alerts.push('⚠️ MISSING: Balances file (notebooks/updates/Balances_for_Account_Z05724592.csv)');
+  } else if (outdatedBalances) {
+    alerts.push('⚠️ OUTDATED: Balances file is older than 7 days');
+  }
+
+  if (missingPositions) {
+    alerts.push('⚠️ MISSING: Portfolio positions file (notebooks/updates/Portfolio_Positions_MMM-DD-YYYY.csv)');
+  } else if (outdatedPositions) {
+    alerts.push('⚠️ OUTDATED: Portfolio positions file is older than 7 days');
+  }
+
+  if (alerts.length === 0) return '';
+
+  return `
+═══════════════════════════════════════════
+🚨 PORTFOLIO DATA ALERT
+═══════════════════════════════════════════
+
+${alerts.join('\n')}
+
+📥 ACTION REQUIRED:
+Please update your portfolio data by downloading the latest files from Fidelity:
+1. Balances: Export to notebooks/updates/Balances_for_Account_Z05724592.csv
+2. Positions: Export to notebooks/updates/Portfolio_Positions_MMM-DD-YYYY.csv
+
+Your Finance Guru analysis will be more accurate with current data.
+`;
 }
 
 function loadFile(path: string): string {
@@ -95,11 +174,20 @@ function processHook(inputData: string) {
     const systemContext = loadFile(systemContextPath);
     
     // Load latest portfolio updates
-    const latestBalances = getLatestFile(updatesDir, /^Balances.*\.csv$/);
-    const latestPositions = getLatestFile(updatesDir, /^Portfolio_Positions.*\.csv$/);
-    
+    const latestBalances = getLatestFile(updatesDir, /^Balances_for_Account_Z05724592\.csv$/);
+    const latestPositions = getLatestPositionsFile(updatesDir);
+
+    // Check file status
+    const missingBalances = !latestBalances;
+    const missingPositions = !latestPositions;
+    const outdatedBalances = latestBalances ? !isFileRecent(latestBalances, 7) : false;
+    const outdatedPositions = latestPositions ? !isFileRecent(latestPositions, 7) : false;
+
     const balancesContent = latestBalances ? loadFile(latestBalances) : '[No balances file found]';
     const positionsContent = latestPositions ? loadFile(latestPositions) : '[No positions file found]';
+
+    // Generate alert if needed
+    const updateAlert = generateUpdateAlert(missingBalances, missingPositions, outdatedBalances, outdatedPositions);
     
     // Build system reminder output
     const output = `
@@ -148,7 +236,7 @@ ${balancesContent}
 File: ${latestPositions || 'Not found'}
 
 ${positionsContent}
-
+${updateAlert}
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ✅ Finance Guru context fully loaded and ready
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
