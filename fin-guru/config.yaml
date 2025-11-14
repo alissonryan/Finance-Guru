@@ -64,9 +64,10 @@ tasks:
     - kb-mode-interaction
 
 templates:
-  count: 7
+  count: 8
   list:
     - analysis-report
+    - buy-ticket-template
     - compliance-memo
     - excel-model-spec
     - income-strategy-template

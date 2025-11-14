@@ -114,7 +114,7 @@ This is YOUR organized documentation command center, restructured for clarity an
 
 **Document Naming Conventions:**
 - Active strategies: `{strategy-name}-master-strategy.md` (no dates, evergreen)
-- Execution tickets: `buy-ticket-{YYYY-MM-DD}-{descriptor}.md`
+- Execution tickets: `buy-ticket-{YYYY-MM-DD}-{short-descriptor}.md` (max 2-3 words for descriptor, e.g., "hybrid-drip-v2", NOT "w2-deployment-ecat-addition")
 - Analysis reports: `{topic}-{YYYY-MM-DD}.md`
 - Monthly reports: `monthly-refresh-{YYYY-MM-DD}.md`
 

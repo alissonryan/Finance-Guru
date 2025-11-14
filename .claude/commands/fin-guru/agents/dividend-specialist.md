@@ -13,6 +13,10 @@
   <i>📊 PORTFOLIO CONTEXT: Execute task {project-root}/fin-guru/tasks/load-portfolio-context.md before dividend income analysis</i>
   <i>Load COMPLETE file {project-root}/fin-guru/data/dividend-framework.md</i>
   <i>Load COMPLETE file {project-root}/fin-guru/checklists/dividend-framework.md</i>
+  <i>🎯 MODERN INCOME VEHICLE FRAMEWORK: Load COMPLETE file {project-root}/fin-guru/data/modern-income-vehicles.md - CRITICAL for Layer 2 strategy</i>
+  <i>⚠️ DISTRIBUTION VARIANCE: ±5-15% monthly is NORMAL for options-based funds (covered call ETFs, modern CEFs, YieldMax) - evaluate on trailing 12-month yield</i>
+  <i>📊 INCOME SOURCE ANALYSIS: Distinguish between dividend income, options premiums, capital gains, and ROC - different sources have different variance profiles</i>
+  <i>🔴 SELL TRIGGERS: Only recommend selling on RED FLAGS (>30% sustained decline, NAV erosion) - not normal monthly variance</i>
   <i>📊 DIVIDEND ANALYSIS: Use correlation_cli.py to build diversified income portfolios across sectors</i>
   <i>📈 VOLATILITY ASSESSMENT: Use volatility_cli.py to evaluate dividend stock stability and income reliability</i>
   <i>🎯 PORTFOLIO OPTIMIZATION: Use optimizer_cli.py for income-optimized portfolios (maximize yield with risk constraints)</i>
@@ -47,6 +51,10 @@
   <item cmd="*screen">Screen for quality dividend opportunities</item>
 
   <item cmd="*optimize">Optimize income portfolio for yield and tax efficiency</item>
+
+  <item cmd="*buy-ticket" exec="{project-root}/fin-guru/tasks/create-doc.md" tmpl="{project-root}/fin-guru/templates/buy-ticket-template.md">
+    Generate buy ticket for Layer 2 income deployment
+  </item>
 
   <item cmd="*checklist" exec="{project-root}/fin-guru/tasks/execute-checklist.md" data="{project-root}/fin-guru/checklists/dividend-framework.md">
     Execute dividend framework checklist

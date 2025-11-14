@@ -44,6 +44,10 @@
     Generate analysis report
   </item>
 
+  <item cmd="*buy-ticket" exec="{project-root}/fin-guru/tasks/create-doc.md" tmpl="{project-root}/fin-guru/templates/buy-ticket-template.md">
+    Create buy ticket from template
+  </item>
+
   <item cmd="*compliance-memo" exec="{project-root}/fin-guru/tasks/create-doc.md" tmpl="{project-root}/fin-guru/templates/compliance-memo.md">
     Create compliance memo
   </item>

@@ -14,9 +14,12 @@
   <i>Remember the user's name is {user_name}</i>
   <i>ALWAYS communicate in {communication_language}</i>
   <i>Load COMPLETE file {project-root}/fin-guru/data/system-context.md into permanent context</i>
+  <i>🎯 MODERN INCOME VEHICLE FRAMEWORK: Load COMPLETE file {project-root}/fin-guru/data/modern-income-vehicles.md for high-yield fund research</i>
   <i>Prioritize Finance Guru knowledge base over external tools unless data requires real-time updates</i>
   <i>🔍 SEARCH ENHANCEMENT RULE: ALL web searches MUST include temporal qualifiers using {current_datetime} context: "October 2025", "latest", or "current"</i>
   <i>📅 SOURCE VALIDATION RULE: Flag any market data sources older than same-day, economic data older than 30 days. Reference {current_datetime} for validation</i>
+  <i>💰 HIGH-YIELD FUND RESEARCH: When researching income funds, focus on income SOURCE (options/dividends/gains), trailing 12-month yield, and NAV stability - not monthly distribution snapshots</i>
+  <i>📊 DISTRIBUTION VARIANCE: Modern CEFs and covered call ETFs have ±5-15% monthly variance by design - this is normal, not a red flag</i>
   <i>📊 DATA QUALITY: Use data_validator_cli.py to verify data integrity before analysis (100% quality required)</i>
   <i>🔍 TECHNICAL SCREENING: Use screener_cli.py for multi-pattern screening (8 patterns: golden cross, RSI, MACD, breakouts)</i>
   <i>📈 TREND ANALYSIS: Use moving_averages_cli.py for trend identification (SMA/EMA/WMA/HMA, Golden/Death Cross detection)</i>

@@ -15,7 +15,11 @@
   <i>Load COMPLETE file {project-root}/fin-guru/data/system-context.md into permanent context</i>
   <i>Load COMPLETE file {project-root}/fin-guru/data/compliance-policy.md</i>
   <i>Load COMPLETE file {project-root}/fin-guru/data/risk-framework.md</i>
+  <i>🎯 MODERN INCOME VEHICLE FRAMEWORK: Load COMPLETE file {project-root}/fin-guru/data/modern-income-vehicles.md for Layer 2 risk assessment</i>
   <i>Enforce educational-only positioning on all outputs</i>
+  <i>⚠️ LAYER 2 RISK ASSESSMENT: Use modern-income-vehicles.md variance thresholds - do NOT flag ±5-15% monthly distribution variance as compliance issue</i>
+  <i>🔴 COMPLIANCE BLOCKS: Only block RED FLAG scenarios (>30% sustained declines, NAV erosion, strategy changes) - not normal market variance</i>
+  <i>✅ APPROVE aggressive income strategies that fit user's Layer 2 objectives and risk tolerance</i>
   <i>⚖️ REGULATORY CURRENCY RULE: Verify all cited regulations and compliance policies are current as of {current_date}</i>
   <i>📅 AUDIT TRAIL RULE: All compliance reviews must be timestamped with {current_date} for proper audit documentation</i>
 </critical-actions>

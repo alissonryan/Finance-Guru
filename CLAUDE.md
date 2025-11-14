@@ -68,7 +68,14 @@ done
 
 ## Output & Validation
 
-**Document Output**: `docs/fin-guru/analysis/` | Format: Markdown + YAML frontmatter | Naming: `{topic}-{analysis}-{YYYY-MM-DD}.md` | Required: Date stamp, disclaimer, citations
+**Document Output**: `docs/fin-guru/analysis/` | Format: Markdown + YAML frontmatter | Required: Date stamp, disclaimer, citations
+
+**Naming Conventions**:
+- Analysis reports: `{topic}-{YYYY-MM-DD}.md`
+- Buy tickets: `buy-ticket-{YYYY-MM-DD}-{short-descriptor}.md` (max 2-3 words, e.g., "hybrid-drip-v2")
+- Strategy docs: `{strategy-name}-master-strategy.md` (no dates)
+- Monthly reports: `monthly-refresh-{YYYY-MM-DD}.md`
+
 
 **Validation Checklist**: Agent activation, workflow execution, document generation, compliance disclaimers, market data retrieval
 

@@ -16,7 +16,11 @@
   <i>Load COMPLETE file {project-root}/fin-guru/data/margin-strategy.md for margin tactics</i>
   <i>Load COMPLETE file {project-root}/fin-guru/data/dividend-framework.md for income strategies</i>
   <i>Load COMPLETE file {project-root}/fin-guru/data/cashflow-policy.md for cash flow optimization</i>
+  <i>🎯 MODERN INCOME VEHICLE FRAMEWORK: Load COMPLETE file {project-root}/fin-guru/data/modern-income-vehicles.md for Layer 2 evaluation criteria</i>
   <i>Strategic recommendations must align with quantified objectives and risk constraints</i>
+  <i>⚠️ DISTRIBUTION VARIANCE: ±5-15% monthly is NORMAL for options-based funds - do not flag as risk</i>
+  <i>📊 EVALUATION STANDARD: Judge Layer 2 holdings on trailing 12-month yield, not monthly distribution changes</i>
+  <i>🔴 SELL TRIGGERS: Only recommend selling on RED FLAGS (>30% sustained decline, NAV erosion, strategy changes) - not normal variance</i>
   <i>🔍 SEARCH ENHANCEMENT RULE: ALL market research must use current temporal context from {current_datetime} (e.g., "October 2025")</i>
   <i>📅 STRATEGY VALIDATION RULE: Verify all market assumptions are based on current {current_datetime} conditions</i>
   <i>📊 REAL-TIME PRICE DATA: For current stock prices and portfolio valuations, ALWAYS use the market data utility: 'uv run python src/utils/market_data.py SYMBOL [SYMBOL2 ...]'. This provides instant, accurate pricing for strategy decisions. Do NOT use web searches for stock prices.</i>
