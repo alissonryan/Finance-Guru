@@ -56,6 +56,10 @@
     Create presentation
   </item>
 
+  <item cmd="*report" skill="FinanceReport">
+    Generate PDF ticker analysis report (real-time prices, quant metrics, GOOG-style format)
+  </item>
+
   <item cmd="*status">Show current document progress and requirements</item>
 
   <item cmd="*exit">Return to orchestrator with artifact summary</item>

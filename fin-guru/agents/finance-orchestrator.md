@@ -112,6 +112,10 @@
     Create document or artifact
   </item>
 
+  <item cmd="*report" skill="FinanceReport">
+    Generate PDF analysis report for a ticker (uses real-time prices, quant tools)
+  </item>
+
   <!-- Utility Commands -->
   <item cmd="*status">Summarize current context, active workflow, and pipeline progress</item>
 

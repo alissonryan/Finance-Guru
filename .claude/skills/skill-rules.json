@@ -199,6 +199,72 @@
                     "fin-guru/data/spreadsheet-*.md"
                 ]
             }
+        },
+        "retirement-syncing": {
+            "type": "domain",
+            "enforcement": "suggest",
+            "priority": "high",
+            "description": "Sync retirement account data from Vanguard and Fidelity CSV exports to Google Sheets DataHub retirement section. Aggregates holdings by ticker and updates quantities.",
+            "promptTriggers": {
+                "keywords": [
+                    "sync retirement",
+                    "update retirement",
+                    "retirement accounts",
+                    "vanguard sync",
+                    "401k update",
+                    "ira sync",
+                    "retirement quantities",
+                    "retirement positions",
+                    "vanguard ira",
+                    "fidelity 401k"
+                ],
+                "intentPatterns": [
+                    "(sync|update|refresh).*?(retirement|vanguard|401k|ira)",
+                    "(import|load).*?(retirement|vanguard csv|401k)",
+                    "update.*?(retirement accounts|retirement quantities)",
+                    "(sync|update).*?(retirement section|retirement holdings)"
+                ]
+            },
+            "fileTriggers": {
+                "pathPatterns": [
+                    "notebooks/retirement-accounts/*.csv",
+                    "notebooks/retirement-accounts/OfxDownload*.csv",
+                    "notebooks/retirement-accounts/Portfolio_Positions_*.csv"
+                ]
+            }
+        },
+        "FinanceReport": {
+            "type": "domain",
+            "enforcement": "suggest",
+            "priority": "high",
+            "description": "Generate institutional-quality PDF analysis reports for stocks and ETFs. Includes VGT-style headers, embedded charts, portfolio sizing, and Perplexity sentiment integration.",
+            "promptTriggers": {
+                "keywords": [
+                    "generate report",
+                    "create pdf",
+                    "stock analysis",
+                    "ticker report",
+                    "watchlist analysis",
+                    "analysis report",
+                    "investment report",
+                    "research report",
+                    "regenerate reports",
+                    "full analysis"
+                ],
+                "intentPatterns": [
+                    "(generate|create|make|build).*?(report|pdf|analysis)",
+                    "(full|thorough|comprehensive|deep).*?(analysis|research)",
+                    "(analyze|research).*?(stock|ticker|etf)",
+                    "regenerate.*?(batch|reports|watchlist)"
+                ]
+            },
+            "fileTriggers": {
+                "pathPatterns": [
+                    "docs/fin-guru/analysis/reports/*.pdf",
+                    "docs/fin-guru/analysis/*watchlist*.md",
+                    "scripts/generate_*_report.py"
+                ]
+            }
         }
     },
     "notes": {

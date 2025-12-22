@@ -20,9 +20,9 @@ Use this skill when:
 
 ## Core Workflow
 
-### 1. Read Latest Fidelity CSV
+### 1. Read Latest Fidelity CSVs
 
-**Location**: `notebooks/updates/Portfolio_Positions_MMM-DD-YYYY.csv`
+**Positions File**: `notebooks/updates/Portfolio_Positions_MMM-DD-YYYY.csv`
 
 **Key Fields to Extract**:
 - **Symbol** → Column A: Ticker
@@ -34,6 +34,27 @@ Use this skill when:
 Symbol,Quantity,Last Price,Current Value,Total Gain/Loss Dollar,...,Average Cost Basis
 TSLA,74,$445.47,$32964.78,+$15634.71,...,$234.19
 PLTR,369.746,$188.90,$69845.01,+$60235.59,...,$25.99
+```
+
+**Balances File**: `notebooks/updates/Balances_for_Account_Z05724592.csv`
+
+**Key Fields to Extract for Cash & Margin**:
+- **"Cash and credits"** → Use for SPAXX row (Column L: Current Value)
+- **"Account equity percentage"** → If 100%, margin debt = $0
+- **"Margin interest accrued this month"** → If > $1, there IS margin debt
+
+**⚠️ IMPORTANT: Cash Position Logic**
+- Do NOT use `SPAXX` value from Positions CSV (shows only settled money market)
+- Instead, use **"Cash and credits"** from Balances CSV (includes pending settlements)
+- This gives the TRUE available cash position
+
+**Margin Debt Logic**:
+```
+IF "Account equity percentage" == 100% THEN
+    Margin Debt = $0.00
+ELSE
+    Margin Debt = Total Account Value × (1 - Equity Percentage)
+END
 ```
 
 ### 2. Compare with Current Sheet
@@ -107,18 +128,54 @@ Added {TICKER} - {SHARES} shares @ ${AVG_COST} - Layer: {LAYER}
 Example: Added MSTY - 87.9 shares @ $11.94 - Layer: Layer 2 - Dividend
 ```
 
-### 5. Post-Update Validation
+### 5. Update Cash & Margin Rows
+
+**SPAXX (Cash Position) - Row 37, Column L**:
+```
+1. Read "Cash and credits" from Balances CSV
+2. Update DataHub!L37 with this value (NOT the SPAXX value from Positions CSV)
+```
+
+**Margin Debt - Row 39, Column L**:
+```
+1. Check "Account equity percentage" from Balances CSV
+2. If 100% → Update DataHub!L39 with "$0.00"
+3. If < 100% → Calculate: Total Value × (1 - Equity%) and update
+```
+
+**Example**:
+```javascript
+// Cash position from Balances CSV "Cash and credits" = $7,602.88
+mcp__gdrive__sheets(operation: "updateCells", params: {
+    spreadsheetId: SPREADSHEET_ID,
+    range: "DataHub!L37:L37",
+    values: [["$7,602.88"]]
+})
+
+// Margin debt - equity is 100%, so no debt
+mcp__gdrive__sheets(operation: "updateCells", params: {
+    spreadsheetId: SPREADSHEET_ID,
+    range: "DataHub!L39:L39",
+    values: [["$0.00"]]
+})
+```
+
+### 6. Post-Update Validation
 
 **Verify**:
 - [ ] Google Finance formulas auto-populated prices for new tickers
 - [ ] Formulas still functional (no new #N/A errors)
 - [ ] Row count matches expected additions
 - [ ] Total account value approximately matches Fidelity total
+- [ ] **Cash position reflects "Cash and credits" from Balances CSV**
+- [ ] **Margin debt reflects equity percentage (100% = $0 debt)**
 
 **Log Update Summary**:
 ```
 ✅ Updated 25 positions (quantity + cost basis)
 ✅ Added 3 new tickers: MSTY, YMAX, AMZY
+✅ Cash updated: $7,602.88 (from Balances CSV)
+✅ Margin debt: $0.00 (100% equity)
 ✅ No formula errors detected
 ✅ Portfolio value: $228,809.41 (matches Fidelity)
 ```

@@ -57,6 +57,10 @@
 
   <item cmd="*stress-test">Execute stress testing and sensitivity analysis across market regimes</item>
 
+  <item cmd="*report" skill="FinanceReport">
+    Generate PDF ticker report with quant metrics (risk, momentum, volatility analysis)
+  </item>
+
   <item cmd="*status">Report analysis progress, key metrics, model validation results, outstanding calculations</item>
 
   <item cmd="*exit">Return control to orchestrator with quantitative analysis summary</item>

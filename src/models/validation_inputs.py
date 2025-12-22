@@ -72,10 +72,10 @@ class PriceSeriesInput(BaseModel):
 
     ticker: str = Field(
         ...,
-        description="Stock ticker symbol (e.g., 'TSLA', 'AAPL', 'SPY')",
+        description="Stock ticker symbol (e.g., 'TSLA', 'AAPL', 'SPY', 'BRK-B')",
         min_length=1,
         max_length=10,
-        pattern=r"^[A-Z]+$",
+        pattern=r"^[A-Z\-\.]+$",  # Uppercase letters, hyphens, and dots (e.g., BRK-B, BRK.B)
     )
 
     prices: list[float] = Field(

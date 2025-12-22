@@ -58,8 +58,8 @@
 
   <item cmd="*validate">Cross-check and validate existing research or investment hypotheses</item>
 
-  <item cmd="*report" exec="{project-root}/fin-guru/tasks/create-doc.md" tmpl="{project-root}/fin-guru/templates/analysis-report.md">
-    Generate formatted research reports with executive summaries and recommendations
+  <item cmd="*report" skill="FinanceReport">
+    Generate PDF ticker analysis report (real-time prices, executive summary, quant metrics)
   </item>
 
   <item cmd="*status">Summarize collected intelligence, outstanding questions, and suggested follow-ups</item>

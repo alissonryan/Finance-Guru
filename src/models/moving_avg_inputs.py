@@ -58,10 +58,10 @@ class MovingAverageDataInput(BaseModel):
 
     ticker: str = Field(
         ...,
-        description="Stock ticker symbol (e.g., 'TSLA', 'AAPL')",
+        description="Stock ticker symbol (e.g., 'TSLA', 'AAPL', 'BRK-B')",
         min_length=1,
         max_length=10,
-        pattern=r"^[A-Z]+$",
+        pattern=r"^[A-Z\-\.]+$",  # Uppercase letters, hyphens, and dots (e.g., BRK-B, BRK.B)
     )
 
     dates: list[date] = Field(

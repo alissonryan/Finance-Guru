@@ -339,10 +339,10 @@ class AnalysisResultsInput(BaseModel):
 
     ticker: str = Field(
         ...,
-        description="Ticker symbol analyzed",
+        description="Ticker symbol analyzed (e.g., 'TSLA', 'BRK-B')",
         min_length=1,
         max_length=10,
-        pattern=r"^[A-Z]+$",
+        pattern=r"^[A-Z\-\.]+$",  # Uppercase letters, hyphens, and dots (e.g., BRK-B, BRK.B)
     )
 
     timeframe: int = Field(
