@@ -1,22 +1,52 @@
 ---
-name: portfolio-syncing
-description: Import and sync portfolio data from Fidelity CSV exports to Google Sheets DataHub. Handles CSV parsing, position updates, safety checks for mismatches and large changes, and validates formula integrity. Triggers on import fidelity, sync portfolio, update positions, CSV import, or working with Portfolio_Positions CSVs.
+name: PortfolioSyncing
+description: Import and sync Fidelity CSV portfolio data to Google Sheets DataHub. USE WHEN user mentions import fidelity OR sync portfolio OR update positions OR CSV import OR portfolio-sync OR working with Portfolio_Positions CSVs. Handles position updates, SPAXX/margin validation, safety checks, and formula protection.
 ---
 
-# Portfolio Syncing
-
-## Purpose
+# PortfolioSyncing
 
 Safely import Fidelity CSV position exports into the Google Sheets DataHub tab, ensuring data integrity, validating changes, and protecting sacred formulas.
 
-## When to Use
+## Workflow Routing
 
-Use this skill when:
-- Importing new Fidelity CSV exports from `notebooks/updates/`
-- Updating portfolio positions after trades
-- Syncing position quantities and cost basis
-- User mentions: "import fidelity", "sync portfolio", "update positions", "CSV import"
-- Working with files matching `Portfolio_Positions_*.csv`
+**When executing this workflow, output this notification:**
+
+```
+Running the **SyncPortfolio** workflow from the **PortfolioSyncing** skill...
+```
+
+| Workflow | Trigger | File |
+|----------|---------|------|
+| **SyncPortfolio** | "sync portfolio", "portfolio-sync", "import fidelity" | `workflows/SyncPortfolio.md` |
+
+## Examples
+
+**Example 1: Sync after downloading new Fidelity CSV**
+```
+User: "portfolio-sync"
+-> Reads Portfolio_Positions_*.csv and Balances_*.csv from notebooks/updates/
+-> Compares with Google Sheets DataHub
+-> Updates quantities, cost basis, SPAXX, margin debt
+-> Reports changes and validates formulas
+```
+
+**Example 2: Update positions after trades**
+```
+User: "I just bought more JEPI, sync my portfolio"
+-> Invokes SyncPortfolio workflow
+-> Detects quantity change in JEPI
+-> If >10% change, asks for confirmation
+-> Updates DataHub with new position data
+```
+
+**Example 3: Import new Fidelity export**
+```
+User: "import fidelity CSV"
+-> Locates latest CSV files by date
+-> Runs safety checks (position count, large changes)
+-> Syncs all positions and cash/margin values
+-> Logs update summary
+```
 
 ## Core Workflow
 
@@ -39,14 +69,16 @@ PLTR,369.746,$188.90,$69845.01,+$60235.59,...,$25.99
 **Balances File**: `notebooks/updates/Balances_for_Account_Z05724592.csv`
 
 **Key Fields to Extract for Cash & Margin**:
-- **"Cash and credits"** → Use for SPAXX row (Column L: Current Value)
+- **"Settled cash"** → Use for SPAXX row (Column L: Current Value)
 - **"Account equity percentage"** → If 100%, margin debt = $0
+- **"Net debit"** → Actual margin balance (negative value = margin debt)
 - **"Margin interest accrued this month"** → If > $1, there IS margin debt
 
 **⚠️ IMPORTANT: Cash Position Logic**
 - Do NOT use `SPAXX` value from Positions CSV (shows only settled money market)
-- Instead, use **"Cash and credits"** from Balances CSV (includes pending settlements)
-- This gives the TRUE available cash position
+- Use **"Settled cash"** from Balances CSV for the SPAXX row
+- If "Settled cash" = 0, then SPAXX = $0 (all funds are invested or in margin)
+- "Cash market value" is NOT cash - it's the value of positions in your Cash account (vs Margin account)
 
 **Margin Debt Logic**:
 ```
@@ -89,6 +121,42 @@ END
 - Scan Columns C-S for #N/A, #DIV/0!, #REF! errors before updating
 - If 3+ errors detected, **STOP** and suggest formula repair first
 
+### 3.5 Transaction History Cross-Check (Optional Validation)
+
+**Transactions File**: `notebooks/transactions/History_for_Account_Z05724592.csv`
+
+When large quantity changes (>10%) are detected, cross-reference with the transaction history to validate:
+
+**Key Fields to Check**:
+- **Run Date** → Date of transaction
+- **Action** → BUY, SELL, DIVIDEND, etc.
+- **Symbol** → Ticker symbol
+- **Quantity** → Shares bought/sold
+- **Amount** → Dollar value of transaction
+
+**Validation Logic**:
+```
+For each ticker with >10% change:
+1. Read transaction history for that ticker
+2. Sum recent BUY transactions since last sync
+3. Verify: Current CSV Qty ≈ Previous Sheet Qty + Net Transactions
+4. If mismatch > 1 share, FLAG for manual review
+```
+
+**Example Cross-Check**:
+```
+JEPI shows +18.9 shares (90.82 → 109.72)
+Transaction History shows:
+  - Dec 15: BUY JEPI 10 shares
+  - Dec 18: BUY JEPI 8.9 shares (DRIP)
+  Total: +18.9 shares ✅ VERIFIED
+```
+
+**When to Skip**:
+- Small changes (<10%) - trust CSV
+- User explicitly confirms changes
+- Transaction file unavailable or outdated
+
 ### 4. Update Operations
 
 #### For EXISTING Tickers:
@@ -128,35 +196,53 @@ Added {TICKER} - {SHARES} shares @ ${AVG_COST} - Layer: {LAYER}
 Example: Added MSTY - 87.9 shares @ $11.94 - Layer: Layer 2 - Dividend
 ```
 
-### 5. Update Cash & Margin Rows
+### 5. Update Cash & Margin Rows (MANDATORY)
+
+**🚨 CRITICAL: This step is NOT optional. SPAXX and Margin must be updated every sync.**
 
 **SPAXX (Cash Position) - Row 37, Column L**:
 ```
-1. Read "Cash and credits" from Balances CSV
-2. Update DataHub!L37 with this value (NOT the SPAXX value from Positions CSV)
+1. Read "Settled cash" from Balances CSV
+2. If "Settled cash" = 0 → Update DataHub!L37 with " $ -   " (zero cash)
+3. If "Settled cash" > 0 → Update DataHub!L37 with formatted value
+4. ⚠️ SAFETY CHECK: If current sheet SPAXX differs from CSV by >$100, FLAG for user
+```
+
+**Pending Activity - Row 38, Column L**:
+```
+1. Read "Net debit" from Balances CSV (will be negative if margin used)
+2. Update DataHub!L38 with this value (format: " $ (X,XXX.XX)" for negative)
 ```
 
 **Margin Debt - Row 39, Column L**:
 ```
-1. Check "Account equity percentage" from Balances CSV
-2. If 100% → Update DataHub!L39 with "$0.00"
-3. If < 100% → Calculate: Total Value × (1 - Equity%) and update
+1. Read "Net debit" from Balances CSV
+2. Convert to positive: Margin Debt = ABS(Net debit)
+3. Update DataHub!L39 with positive value (format: " $ X,XXX.XX ")
+4. If Net debit = 0 → Update with " $ -   "
 ```
 
 **Example**:
 ```javascript
-// Cash position from Balances CSV "Cash and credits" = $7,602.88
+// Cash position from Balances CSV "Settled cash" = 0
 mcp__gdrive__sheets(operation: "updateCells", params: {
     spreadsheetId: SPREADSHEET_ID,
     range: "DataHub!L37:L37",
-    values: [["$7,602.88"]]
+    values: [[" $ -   "]]
 })
 
-// Margin debt - equity is 100%, so no debt
+// Pending Activity from "Net debit" = -7822.71
+mcp__gdrive__sheets(operation: "updateCells", params: {
+    spreadsheetId: SPREADSHEET_ID,
+    range: "DataHub!L38:L38",
+    values: [[" $ (7,822.71)"]]
+})
+
+// Margin debt = ABS(-7822.71) = 7822.71
 mcp__gdrive__sheets(operation: "updateCells", params: {
     spreadsheetId: SPREADSHEET_ID,
     range: "DataHub!L39:L39",
-    values: [["$0.00"]]
+    values: [[" $ 7,822.71 "]]
 })
 ```
 
@@ -167,15 +253,17 @@ mcp__gdrive__sheets(operation: "updateCells", params: {
 - [ ] Formulas still functional (no new #N/A errors)
 - [ ] Row count matches expected additions
 - [ ] Total account value approximately matches Fidelity total
-- [ ] **Cash position reflects "Cash and credits" from Balances CSV**
-- [ ] **Margin debt reflects equity percentage (100% = $0 debt)**
+- [ ] **SPAXX reflects "Settled cash" from Balances CSV** (MANDATORY)
+- [ ] **Pending Activity reflects "Net debit" from Balances CSV** (MANDATORY)
+- [ ] **Margin Debt = ABS(Net debit)** (MANDATORY)
 
 **Log Update Summary**:
 ```
 ✅ Updated 25 positions (quantity + cost basis)
 ✅ Added 3 new tickers: MSTY, YMAX, AMZY
-✅ Cash updated: $7,602.88 (from Balances CSV)
-✅ Margin debt: $0.00 (100% equity)
+✅ SPAXX updated: $0 (Settled cash = 0)
+✅ Pending Activity: -$7,822.71 (Net debit)
+✅ Margin debt: $7,822.71 (ABS of Net debit)
 ✅ No formula errors detected
 ✅ Portfolio value: $228,809.41 (matches Fidelity)
 ```
@@ -223,11 +311,20 @@ Use these patterns to auto-classify new tickers in Column S:
 3. Any cost basis change > 20%
 4. 3+ formula errors detected
 5. Margin balance jumped > $5,000 (unintentional draw)
+6. **SPAXX discrepancy > $100** (cash mismatch between sheet and CSV)
+
+**FLAG conditions** (alert user but proceed):
+- SPAXX differs from "Settled cash" by $1-$100 (minor discrepancy)
+- Pending Activity differs from "Net debit" by >$100
 
 **When STOPPED**:
 - Show clear diff table
 - Ask user to confirm changes
 - Proceed only after explicit approval
+
+**When FLAGGED**:
+- Show the discrepancy
+- Proceed with update but highlight in summary
 
 ## Example Scenario
 
@@ -363,12 +460,17 @@ For complete architecture details, see:
 ## Pre-Flight Checklist
 
 Before importing CSV:
-- [ ] CSV file is latest by date
-- [ ] CSV is from Fidelity (not M1 Finance or other broker)
-- [ ] File is in `notebooks/updates/` directory
+- [ ] **Positions CSV** (`Portfolio_Positions_*.csv`) is latest by date
+- [ ] **Balances CSV** (`Balances_for_Account_*.csv`) is available and current
+- [ ] Both CSVs are from Fidelity (not M1 Finance or other broker)
+- [ ] Files are in `notebooks/updates/` directory
 - [ ] Google Sheets DataHub tab exists
 - [ ] No pending manual edits in sheet (user should save first)
 - [ ] Current portfolio value is known (for validation)
+
+**⚠️ BOTH CSVs Required**: Positions CSV alone is insufficient. Balances CSV provides:
+- "Settled cash" → SPAXX value
+- "Net debit" → Pending Activity and Margin Debt values
 
 ---
 

@@ -62,11 +62,11 @@
                 ]
             }
         },
-        "portfolio-syncing": {
+        "PortfolioSyncing": {
             "type": "domain",
             "enforcement": "block",
             "priority": "critical",
-            "description": "Import and sync portfolio data from Fidelity CSV exports to Google Sheets Portfolio Positions. Handles safety checks, position updates, and formula validation.",
+            "description": "Import and sync Fidelity CSV portfolio data to Google Sheets DataHub. USE WHEN user mentions import fidelity OR sync portfolio OR update positions OR CSV import OR portfolio-sync. Handles position updates, SPAXX/margin validation, safety checks, and formula protection.",
             "promptTriggers": {
                 "keywords": [
                     "import fidelity",
@@ -76,6 +76,7 @@
                     "portfolio import",
                     "csv import",
                     "portfolio sync",
+                    "portfolio-sync",
                     "fidelity export",
                     "import csv",
                     "sync positions"
