@@ -2,6 +2,7 @@
 
 Finance Guru™ - Private AI-powered family office system built on BMAD-CORE™ v6.
 
+*For Claude Code only*: ALWAYS use the `AskUserQuestion` tool when posing questions to the user.
 **Key Principle**: This IS Finance Guru (not a product) - a personal financial command center. Use "your" when discussing assets/strategies/portfolios.
 
 ## Architecture
