@@ -78,7 +78,7 @@ notebooks/
 # User's financial profile
 fin-guru/data/user-profile.yaml
 # All generated strategies and reports
-docs/
+fin-guru-private/
 # Google Sheets portfolio optimizer scripts (contains sensitive portfolio logic)
 scripts/google-sheets/portfolio-optimizer/
 
@@ -105,4 +105,4 @@ scripts/
 fin-guru/data/
 
 # Private docs (buy tickets, analysis, strategies)
-docs/
+# Note: fin-guru-private/ is already ignored above

@@ -3,6 +3,7 @@
 Finance Guru™ - Private AI-powered family office system built on BMAD-CORE™ v6.
 
 *For Claude Code only*: ALWAYS use the `AskUserQuestion` tool when posing questions to the user.
+*For Claude Code only*: ALWAYS use the `AskUserQuestion` tool when posing questions to the user.
 **Key Principle**: This IS Finance Guru (not a product) - a personal financial command center. Use "your" when discussing assets/strategies/portfolios.
 
 ## Architecture
@@ -49,7 +50,7 @@ done
 
 | Tool | Script Path | Metrics/Features | Unique Flags | Docs |
 |------|-------------|------------------|--------------|------|
-| **Risk Metrics** | `src/analysis/risk_metrics_cli.py` | VaR, CVaR, Sharpe, Sortino, Max DD, Calmar, Volatility, Beta, Alpha | `--benchmark SPY`, `--save-to <path>` | `docs/guides/risk-metrics-tool-guide.md` |
+| **Risk Metrics** | `src/analysis/risk_metrics_cli.py` | VaR, CVaR, Sharpe, Sortino, Max DD, Calmar, Volatility, Beta, Alpha | `--benchmark SPY`, `--save-to <path>` | `fin-guru-private/guides/risk-metrics-tool-guide.md` |
 | **Momentum** | `src/utils/momentum_cli.py` | RSI, MACD, Stochastic, Williams %R, ROC, Confluence | `--indicator <type>`, `--rsi-period`, `--macd-*` | - |
 | **Volatility** | `src/utils/volatility_cli.py` | Bollinger Bands, ATR, Historical Vol, Keltner, StdDev, Regime | `--atr-period`, `--bb-period`, `--bb-std` | - |
 | **Correlation** | `src/analysis/correlation_cli.py` | Pearson matrix, Covariance, Diversification, Concentration | `--rolling <N>` (requires 2+ tickers) | - |
@@ -70,7 +71,7 @@ done
 
 ## Output & Validation
 
-**Document Output**: `docs/fin-guru/analysis/` | Format: Markdown + YAML frontmatter | Required: Date stamp, disclaimer, citations
+**Document Output**: `fin-guru-private/fin-guru/analysis/` | Format: Markdown + YAML frontmatter | Required: Date stamp, disclaimer, citations
 
 **Naming Conventions**:
 - Analysis reports: `{topic}-{YYYY-MM-DD}.md`

@@ -126,21 +126,56 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 
 # Google Drive MCP Server (for portfolio syncing)
 git clone https://github.com/AojdevStudio/gdrive.git
-cd gdrive && npm install && npm run build
-
-# Install dependencies
-uv sync
+cd gdrive && bun install && bun run build
 ```
 
-### Your First Analysis
+### Setup
+
+```bash
+# 1. Clone the repository
+git clone https://github.com/yourusername/family-office.git
+cd family-office
+
+# 2. Run the setup script
+./setup.sh
+```
+
+The setup script will:
+- Create your private documentation directories
+- Set up portfolio data folders
+- Create user profile template
+- Install Python dependencies
+
+### Onboarding (First Time Users)
+
+**Important:** Run the Onboarding Specialist before using Finance Guru.
+
+```bash
+# Start Claude Code in the project
+claude
+
+# Activate the Onboarding Specialist
+/fin-guru:agents:onboarding-specialist
+```
+
+The Onboarding Specialist will guide you through:
+1. Financial assessment questionnaire
+2. Portfolio profile creation
+3. Risk tolerance configuration
+4. Strategy recommendations
+
+### After Onboarding
+
+Once your profile is set up, activate the full Finance Guru system:
+
 ```bash
 # Activate Finance Guru
-/finance-orchestrator
+/fin-guru:agents:finance-orchestrator
 
 # Or go direct to a specialist
-*agent quant            # "Analyze TSLA risk profile"
-*agent strategy         # "Optimize my portfolio allocation"
-*agent market-research  # "What's the momentum on NVDA?"
+*quant            # "Analyze TSLA risk profile"
+*strategy         # "Optimize my portfolio allocation"
+*market-research  # "What's the momentum on NVDA?"
 ```
 
 ## Project Structure
@@ -184,6 +219,99 @@ The difference:
 - **yfinance** - Market data
 - **pandas/numpy/scipy** - Calculations
 - **ITC Risk Models** - External risk intelligence
+
+## Context Management
+
+Finance Guru is designed for **token efficiency**. Even with extensive startup context injection, you retain ample room for complex analysis.
+
+### Typical Session Context Usage
+
+| Component | Tokens | % of 200k |
+|-----------|--------|-----------|
+| System prompt | 3.8k | 1.9% |
+| System tools | 17.8k | 8.9% |
+| MCP tools | 1.5k | 0.8% |
+| Custom agents | 1.0k | 0.5% |
+| Memory files (CLAUDE.md) | 2.5k | 1.2% |
+| Skills | 3.6k | 1.8% |
+| Messages | 22.2k | 11.1% |
+| **Free space** | **103k** | **51.3%** |
+| Autocompact buffer | 45.0k | 22.5% |
+
+**Key insight**: With Finance Guru context auto-loaded at session start, you still have **51% free context** for actual work.
+
+### Why This Works
+
+1. **CLI-First Architecture**: Heavy computation happens in Python CLI tools, not in context. When you run `risk_metrics_cli.py`, the calculation happens outside the token window.
+
+2. **Session Start Hooks**: The `load-fin-core-config.ts` hook injects:
+   - System configuration
+   - User profile with portfolio strategy
+   - Latest Fidelity balances and positions
+   - fin-core skill content
+
+3. **Skills Auto-Activate**: Instead of loading all domain knowledge upfront, skills load on-demand based on your prompts and file paths.
+
+4. **Structured Context**: YAML configs and markdown docs compress well and are easy for Claude to parse.
+
+See [docs/hooks.md](docs/hooks.md) for details on the hooks system.
+
+## Requirements
+
+### Required MCP Servers
+
+These MCP servers must be configured for Finance Guru to function:
+
+| MCP Server | Purpose | Required For |
+|------------|---------|--------------|
+| **exa** | Market research, intelligence gathering | Market Researcher agent, web searches |
+| **bright-data** | Web scraping, data extraction | Alternative data sources, live data |
+| **sequential-thinking** | Complex financial reasoning | Multi-step analysis workflows |
+
+### Optional MCP Servers
+
+Enhance functionality but not required:
+
+| MCP Server | Purpose | Use Case |
+|------------|---------|----------|
+| **gdrive** | Google Sheets integration | Portfolio tracking, DataHub sync |
+| **perplexity** | AI-powered search with citations | Deep research, market analysis |
+| **financial-datasets** | Real-time market data | Live price feeds |
+| **context7** | Documentation lookup | Framework reference |
+| **nano-banana** | Image generation | Chart visualization |
+
+### Optional APIs
+
+All market data is fetched via yfinance by default. These APIs are optional enhancements:
+
+| API | Purpose | Get Key |
+|-----|---------|---------|
+| **Finnhub** | Real-time intraday prices | [finnhub.io](https://finnhub.io/) (free tier: 60 calls/min) |
+| **ITC Risk Models** | External risk intelligence | Contact ITC directly |
+| OpenAI | Alternative LLM for specific tasks | [platform.openai.com](https://platform.openai.com/) |
+
+### Environment Setup
+
+```bash
+# Copy example env file
+cp .env.example .env
+
+# Edit with your API keys (all optional - yfinance works without keys)
+FINNHUB_API_KEY=your_key_here    # For real-time prices
+ITC_API_KEY=your_key_here        # For ITC risk scores
+```
+
+## Documentation
+
+| Document | Description |
+|----------|-------------|
+| [docs/index.md](docs/index.md) | Documentation hub |
+| [docs/api.md](docs/api.md) | CLI tools reference |
+| [docs/hooks.md](docs/hooks.md) | Hooks system documentation |
+| [docs/contributing.md](docs/contributing.md) | Contribution guidelines |
+| [fin-guru/README.md](fin-guru/README.md) | Finance Guru module documentation |
+
+**Note:** After running `setup.sh`, your personal strategies and analysis will be in `fin-guru-private/` (gitignored).
 
 ## Educational Disclaimer
 
