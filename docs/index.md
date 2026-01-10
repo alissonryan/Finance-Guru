@@ -20,40 +20,18 @@ Welcome to the Finance Guru documentation. This hub provides navigation to all t
 
 ## Architecture Overview
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                     Claude Code Session                          │
-├─────────────────────────────────────────────────────────────────┤
-│  SessionStart Hook                                               │
-│  ├─ load-fin-core-config.ts                                     │
-│  │   └─ Injects: config.yaml, user-profile.yaml, portfolio data │
-│  └─ Outputs: System context ready for agents                    │
-├─────────────────────────────────────────────────────────────────┤
-│  User Prompt                                                     │
-│  ├─ skill-activation-prompt.sh                                  │
-│  │   └─ Matches: keywords, intent patterns, file paths          │
-│  └─ Outputs: Skill suggestions injected                         │
-├─────────────────────────────────────────────────────────────────┤
-│  Agent Activation                                                │
-│  ├─ /fin-guru:agents:finance-orchestrator → Cassandra Holt      │
-│  └─ Specialists: Market Researcher, Quant, Strategy, etc.       │
-├─────────────────────────────────────────────────────────────────┤
-│  CLI Tools (Token-Efficient)                                     │
-│  ├─ risk_metrics_cli.py    → VaR, Sharpe, Sortino               │
-│  ├─ momentum_cli.py        → RSI, MACD, Stochastic              │
-│  ├─ volatility_cli.py      → Bollinger, ATR, Regime             │
-│  ├─ correlation_cli.py     → Diversification scoring            │
-│  ├─ optimizer_cli.py       → Max Sharpe, Risk Parity            │
-│  └─ backtester_cli.py      → Strategy validation                │
-├─────────────────────────────────────────────────────────────────┤
-│  PostToolUse Hook                                                │
-│  └─ post-tool-use-tracker.sh → Tracks file modifications        │
-├─────────────────────────────────────────────────────────────────┤
-│  Stop Hook                                                       │
-│  ├─ stop-build-check-enhanced.sh → Validates before completion  │
-│  └─ error-handling-reminder.sh → Ensures errors captured        │
-└─────────────────────────────────────────────────────────────────┘
-```
+<p align="center">
+  <img src="images/finance-guru-architecture-diagram.png" alt="Finance Guru Architecture" width="800"/>
+</p>
+
+The diagram shows the hook-driven agent orchestration pipeline:
+
+1. **SessionStart Hook** - `load-fin-core-config.ts` injects config.yaml, user-profile.yaml, and portfolio data
+2. **User Prompt** - `skill-activation-prompt.sh` matches keywords, intent patterns, and file paths
+3. **Agent Activation** - Finance Orchestrator routes to specialists (Market Researcher, Quant, Strategy, etc.)
+4. **CLI Tools** - Token-efficient Python tools for heavy computation
+5. **PostToolUse Hook** - `post-tool-use-tracker.sh` tracks file modifications
+6. **Stop Hook** - `stop-build-check-enhanced.sh` validates before completion
 
 ## Key Concepts
 
