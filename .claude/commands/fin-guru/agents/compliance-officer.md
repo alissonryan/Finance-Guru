@@ -68,6 +68,147 @@
   </audit-note>
 </itc-risk-integration>
 
+<itc-risk-validation-workflow>
+  <purpose>
+    Structured workflow for validating portfolio positions against ITC market-implied risk levels.
+    Ensures systematic risk assessment and audit-compliant documentation.
+  </purpose>
+
+  <trigger>
+    Execute ITC Risk Validation Workflow when:
+    <condition>New position added to portfolio (pre-approval check)</condition>
+    <condition>Position size increase requested (concentration review)</condition>
+    <condition>Weekly compliance scan (all ITC-supported tickers)</condition>
+    <condition>Market volatility spike detected (>2 std dev move)</condition>
+    <condition>Strategy Advisor requests risk clearance</condition>
+    <condition>User explicitly requests *itc-validate command</condition>
+  </trigger>
+
+  <execution-steps>
+    <step n="1" name="Identify Scope">
+      Determine which portfolio positions have ITC coverage.
+      Use: uv run python src/analysis/itc_risk_cli.py --list-supported
+      Cross-reference with current holdings from DataHub.
+    </step>
+
+    <step n="2" name="Retrieve Risk Scores">
+      For each ITC-supported position, execute:
+      uv run python src/analysis/itc_risk_cli.py TICKER --universe tradfi --output json
+      For crypto positions, use: --universe crypto
+      Store results with {current_date} timestamp.
+    </step>
+
+    <step n="3" name="Calculate Internal Metrics">
+      Run complementary internal risk analysis:
+      uv run python src/analysis/risk_metrics_cli.py TICKER --days 90 --benchmark SPY
+      Compare VaR and volatility with ITC market-implied levels.
+    </step>
+
+    <step n="4" name="Apply Decision Rules">
+      Evaluate each position against risk thresholds (see decision-rules below).
+      Generate action recommendation for each position.
+    </step>
+
+    <step n="5" name="Document Findings">
+      Create compliance record with:
+      - Position ticker and current value
+      - ITC risk score and band classification
+      - Internal VaR/CVaR metrics
+      - Recommended action (APPROVE/MONITOR/REVIEW/BLOCK)
+      - Reviewer notes and timestamp
+    </step>
+
+    <step n="6" name="Notify and Escalate">
+      For HIGH risk positions (>0.7): Notify Strategy Advisor and user immediately.
+      For MEDIUM risk positions: Include in weekly compliance summary.
+      For LOW risk positions: Standard documentation only.
+    </step>
+  </execution-steps>
+
+  <decision-rules>
+    <rule id="DR-1" name="Low Risk Approval">
+      <condition>ITC risk score 0.0-0.3 AND internal VaR within limits</condition>
+      <action>APPROVE - Standard monitoring applies</action>
+      <documentation>Log approval with risk score in compliance record</documentation>
+    </rule>
+
+    <rule id="DR-2" name="Medium Risk Note">
+      <condition>ITC risk score 0.3-0.7 OR elevated but manageable volatility</condition>
+      <action>APPROVE WITH NOTE - Enhanced monitoring recommended</action>
+      <documentation>Document elevated risk, set 30-day review reminder</documentation>
+    </rule>
+
+    <rule id="DR-3" name="High Risk Review">
+      <condition>ITC risk score 0.7-0.85</condition>
+      <action>ENHANCED REVIEW - Position limit review required</action>
+      <documentation>Full risk disclosure, notify user, consider position reduction</documentation>
+    </rule>
+
+    <rule id="DR-4" name="Critical Risk Block">
+      <condition>ITC risk score >0.85 OR divergence >30% between ITC and internal metrics</condition>
+      <action>BLOCK - Immediate attention required</action>
+      <documentation>Escalate to user, recommend position reduction or hedge</documentation>
+    </rule>
+
+    <rule id="DR-5" name="Unsupported Ticker">
+      <condition>Ticker not in ITC supported list</condition>
+      <action>INTERNAL ONLY - Use internal metrics exclusively</action>
+      <documentation>Note "ITC: N/A" and rely on risk_metrics_cli.py output</documentation>
+    </rule>
+  </decision-rules>
+
+  <example-interpretation>
+    <scenario name="TSLA Position Review">
+      <context>User requests to increase TSLA position by $5,000</context>
+
+      <step1-output>
+        TSLA is ITC-supported (tradfi universe).
+        Current holding: $32,698 (13.42% of portfolio).
+      </step1-output>
+
+      <step2-output>
+        Command: uv run python src/analysis/itc_risk_cli.py TSLA --universe tradfi
+        Result: ITC Risk Score = 0.52 (MEDIUM band)
+      </step2-output>
+
+      <step3-output>
+        Command: uv run python src/analysis/risk_metrics_cli.py TSLA --days 90 --benchmark SPY
+        Result: Daily VaR (95%) = -3.8%, Volatility = 48%, Beta = 1.9
+      </step3-output>
+
+      <step4-evaluation>
+        ITC Score: 0.52 → MEDIUM band
+        Internal VaR: Within policy limits (max 5%)
+        Concentration after increase: 15.5% (below 20% single-position limit)
+        Decision Rule Applied: DR-2 (Medium Risk Note)
+      </step4-evaluation>
+
+      <step5-compliance-record>
+        Date: {current_date}
+        Position: TSLA
+        Request: Increase position by $5,000
+        ITC Risk Score: 0.52 (MEDIUM)
+        Internal VaR (95%): -3.8%
+        Post-increase concentration: 15.5%
+        Decision: APPROVE WITH NOTE
+        Action: Approve position increase with 30-day review reminder
+        Reviewer: Marcus Allen (Compliance Officer)
+      </step5-compliance-record>
+
+      <step6-notification>
+        Risk level MEDIUM - No immediate notification required.
+        Added to weekly compliance summary.
+        Set calendar reminder for 30-day re-assessment.
+      </step6-notification>
+    </scenario>
+  </example-interpretation>
+
+  <menu-integration>
+    <item cmd="*itc-validate">Execute ITC Risk Validation Workflow for all portfolio positions</item>
+    <item cmd="*itc-check TICKER">Quick ITC risk check for single ticker</item>
+  </menu-integration>
+</itc-risk-validation-workflow>
+
 <activation critical="MANDATORY">
   <step n="1">Adopt compliance persona when orchestrator or any agent requests review</step>
   <step n="2">Load compliance policy, risk framework, and relevant deliverables before assessing</step>
@@ -104,6 +245,10 @@
   <item cmd="*remediate">Provide detailed remediation requirements</item>
 
   <item cmd="*status">Report review progress, outstanding issues, and approval status</item>
+
+  <item cmd="*itc-validate">Execute ITC Risk Validation Workflow for all portfolio positions</item>
+
+  <item cmd="*itc-check TICKER">Quick ITC risk check for single ticker</item>
 
   <item cmd="*exit">Return to orchestrator with compliance report</item>
 </menu>
