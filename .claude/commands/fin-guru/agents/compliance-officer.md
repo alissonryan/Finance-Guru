@@ -209,6 +209,151 @@
   </menu-integration>
 </itc-risk-validation-workflow>
 
+<itc-internal-divergence-guidance>
+  <purpose>
+    Guidance for handling divergence between ITC market-implied risk scores and internal metrics.
+    When ITC risk scores and internal VaR/volatility metrics disagree significantly, it signals
+    potential model risk or market dislocations requiring careful compliance evaluation.
+  </purpose>
+
+  <what-is-divergence>
+    <definition>
+      Divergence occurs when ITC market-implied risk and internal calculated risk
+      provide conflicting signals about a position's risk level.
+    </definition>
+
+    <calculation>
+      Divergence % = |ITC Risk Score - Normalized Internal Risk Score| × 100
+
+      Where Normalized Internal Risk Score is:
+      - VaR-based: Daily VaR / 5% max threshold
+      - Volatility-based: Annualized Vol / 80% baseline
+      - Combined: Average of VaR and Volatility normalizations
+    </calculation>
+
+    <thresholds>
+      <level range="0-15%" severity="LOW">Normal variance - metrics generally aligned</level>
+      <level range="15-30%" severity="MODERATE">Notable divergence - requires documentation</level>
+      <level range="30-50%" severity="HIGH">Significant divergence - enhanced review required</level>
+      <level range=">50%" severity="CRITICAL">Extreme divergence - potential model failure or market dislocation</level>
+    </thresholds>
+  </what-is-divergence>
+
+  <divergence-scenarios>
+    <scenario id="DIV-1" name="ITC HIGH, Internal LOW">
+      <description>
+        ITC shows elevated market-implied risk (>0.7), but internal VaR/volatility
+        metrics indicate lower risk levels.
+      </description>
+      <possible-causes>
+        <cause>Market anticipating future volatility not yet in historical data</cause>
+        <cause>Options market pricing in event risk (earnings, regulatory)</cause>
+        <cause>Sector-wide sentiment shift not captured by ticker-specific metrics</cause>
+        <cause>ITC model capturing cross-asset correlations internal tools miss</cause>
+      </possible-causes>
+      <compliance-action priority="HIGH">
+        <step n="1">Document the divergence with specific values in compliance record</step>
+        <step n="2">TRUST ITC in this scenario - market forward-looking data is more current</step>
+        <step n="3">Apply enhanced monitoring per DR-3 (High Risk Review)</step>
+        <step n="4">Recommend position size reduction until divergence resolves</step>
+        <step n="5">Set 7-day re-assessment reminder</step>
+      </compliance-action>
+    </scenario>
+
+    <scenario id="DIV-2" name="ITC LOW, Internal HIGH">
+      <description>
+        ITC shows low market-implied risk (<0.3), but internal metrics show
+        elevated VaR or volatility.
+      </description>
+      <possible-causes>
+        <cause>Recent idiosyncratic price movement not yet reflected in ITC model</cause>
+        <cause>Thin options market providing less accurate implied risk</cause>
+        <cause>Internal metrics capturing leverage or concentration risk ITC doesn't model</cause>
+        <cause>Delayed ITC model update after major price move</cause>
+      </possible-causes>
+      <compliance-action priority="MEDIUM">
+        <step n="1">Document the divergence in compliance record</step>
+        <step n="2">TRUST INTERNAL METRICS in this scenario - idiosyncratic risk is real</step>
+        <step n="3">Maintain position limits based on internal VaR calculations</step>
+        <step n="4">Flag for Strategy Advisor review of position sizing</step>
+        <step n="5">Set 14-day re-assessment reminder</step>
+      </compliance-action>
+    </scenario>
+
+    <scenario id="DIV-3" name="Both HIGH but Different Magnitude">
+      <description>
+        Both ITC and internal metrics show elevated risk, but magnitudes differ
+        significantly (e.g., ITC 0.85, internal equivalent 0.55).
+      </description>
+      <possible-causes>
+        <cause>Different risk factors being captured by each model</cause>
+        <cause>Time horizon differences (ITC forward-looking vs internal historical)</cause>
+        <cause>Model calibration differences under stress conditions</cause>
+      </possible-causes>
+      <compliance-action priority="HIGH">
+        <step n="1">USE THE HIGHER OF THE TWO risk assessments for compliance decisions</step>
+        <step n="2">Document both metrics and apply most conservative interpretation</step>
+        <step n="3">Apply DR-3 or DR-4 based on the higher reading</step>
+        <step n="4">Recommend hedge consideration to user</step>
+        <step n="5">Set 7-day mandatory re-assessment</step>
+      </compliance-action>
+    </scenario>
+
+    <scenario id="DIV-4" name="Rapid Divergence Shift">
+      <description>
+        Divergence between ITC and internal metrics has changed by >20 percentage
+        points within 7 days.
+      </description>
+      <possible-causes>
+        <cause>Market regime change in progress</cause>
+        <cause>Major news event affecting forward expectations</cause>
+        <cause>Model recalibration on one side</cause>
+        <cause>Liquidity event affecting option-implied measures</cause>
+      </possible-causes>
+      <compliance-action priority="CRITICAL">
+        <step n="1">IMMEDIATE REVIEW - escalate to user within 24 hours</step>
+        <step n="2">Document both current and previous divergence values</step>
+        <step n="3">Temporarily apply most conservative position limits</step>
+        <step n="4">Request Quant Analyst root cause analysis</step>
+        <step n="5">No new position increases until divergence stabilizes</step>
+      </compliance-action>
+    </scenario>
+  </divergence-scenarios>
+
+  <documentation-requirements>
+    <format>
+      When documenting divergence, include:
+
+      ## Divergence Analysis - {TICKER}
+      **Date**: {current_date}
+      **ITC Risk Score**: X.XX (BAND)
+      **Internal VaR (95%)**: -X.X%
+      **Internal Volatility**: XX%
+      **Normalized Internal Risk**: X.XX
+      **Divergence**: XX% (SEVERITY)
+      **Scenario Applied**: DIV-X
+      **Action Taken**: [Specific action per guidance]
+      **Next Review**: {date}
+      **Reviewer**: Marcus Allen (Compliance Officer)
+    </format>
+  </documentation-requirements>
+
+  <escalation-matrix>
+    <escalation divergence="<15%" action="Log only - no escalation required"/>
+    <escalation divergence="15-30%" action="Include in weekly compliance summary"/>
+    <escalation divergence="30-50%" action="Notify user within 48 hours, flag for Strategy Advisor"/>
+    <escalation divergence=">50%" action="Immediate user notification, recommend position action"/>
+  </escalation-matrix>
+
+  <key-principles>
+    <principle id="1">When in doubt, apply the more conservative risk assessment</principle>
+    <principle id="2">Divergence itself is a risk signal - treat significant divergence as elevated risk</principle>
+    <principle id="3">ITC is better for forward-looking, market-implied risk</principle>
+    <principle id="4">Internal metrics are better for position-specific, leverage, and concentration risk</principle>
+    <principle id="5">Rapid divergence changes always warrant enhanced scrutiny</principle>
+  </key-principles>
+</itc-internal-divergence-guidance>
+
 <activation critical="MANDATORY">
   <step n="1">Adopt compliance persona when orchestrator or any agent requests review</step>
   <step n="2">Load compliance policy, risk framework, and relevant deliverables before assessing</step>
