@@ -147,20 +147,16 @@ uv sync
 
 ```
 family-office/
-├── src/                      # Analysis engine
+├── src/                      # Analysis engine (11 tools)
 │   ├── analysis/             # Risk, correlation, options, ITC Risk
 │   ├── strategies/           # Backtester, optimizer
 │   ├── utils/                # Momentum, volatility, validators
 │   └── models/               # Pydantic type definitions
-├── scripts/                  # Automation
-│   ├── reports/              # 21 report templates
-│   ├── simulations/          # Monte Carlo, DRIP projections
-│   └── rbp/                  # Autonomous execution framework
 ├── fin-guru/                 # Agent system
 │   ├── agents/               # 8 specialist definitions
 │   ├── tasks/                # Workflow configurations
-│   └── data/                 # Knowledge base, user profile
-└── docs/                     # Analysis outputs & guides
+│   └── data/                 # Knowledge base & templates
+└── tests/                    # Test suite
 ```
 
 ## Why This Approach Works
