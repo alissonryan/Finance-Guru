@@ -91,8 +91,9 @@ scripts/google-sheets/portfolio-optimizer/
 .claude/data/sessions/
 .mcp.json
 
-# Private scripts
-scripts/
+# Private scripts (except public onboarding CLI)
+scripts/*
+!scripts/onboarding/
 
 # Private session data and conversations
 .claude/data/sessions/
