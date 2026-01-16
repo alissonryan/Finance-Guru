@@ -2,15 +2,41 @@
 
 Complete installation and configuration guide for Finance Guru™ - your AI-powered private family office.
 
+## Quick Start (5 Minutes)
+
+**Already have the prerequisites?** Jump straight to setup:
+
+```bash
+# 1. Fork and clone
+git clone https://github.com/YOUR-USERNAME/family-office.git
+cd family-office
+
+# 2. Run setup
+./setup.sh
+
+# 3. Start Claude Code
+claude
+
+# 4. Run onboarding
+/fin-guru:agents:onboarding-specialist
+```
+
+See [Prerequisites](#prerequisites) below if you need to install tools first.
+
+---
+
 ## Table of Contents
 
-1. [Prerequisites](#prerequisites)
-2. [Installation](#installation)
-3. [Configuration](#configuration)
-4. [Verification](#verification)
-5. [First Use](#first-use)
-6. [Troubleshooting](#troubleshooting)
-7. [Security Checklist](#security-checklist)
+1. [Quick Start](#quick-start-5-minutes)
+2. [Prerequisites](#prerequisites)
+3. [Installation](#installation)
+4. [Configuration](#configuration)
+5. [Verification](#verification)
+6. [First Use](#first-use)
+7. [Troubleshooting](#troubleshooting)
+8. [Post-Installation Checklist](#post-installation-checklist)
+9. [Security Checklist](#security-checklist)
+10. [Next Steps](#next-steps)
 
 ---
 
@@ -122,6 +148,21 @@ tree -L 2 -I 'node_modules|__pycache__|.venv'
 ### MCP Servers
 
 Finance Guru requires MCP servers for external integrations. Configure them in Claude Code settings.
+
+**Using MCP Launchpad**: Finance Guru includes MCP Launchpad (`mcpl`), a unified CLI for managing all MCP servers. Always use `mcpl search "<query>"` to discover available tools before calling them manually.
+
+```bash
+# Search for tools across all MCP servers
+mcpl search "list projects"
+
+# Verify all MCP servers are connected
+mcpl verify
+
+# Check server status
+mcpl session status
+```
+
+See [CLAUDE.md](../CLAUDE.md) for complete MCP Launchpad documentation.
 
 #### Required MCP Servers
 
@@ -283,27 +324,44 @@ cat .claude/settings.json | grep -A 5 hooks
 ```json
 {
   "hooks": {
-    "SessionStart": {
-      "command": "bun",
-      "args": [".claude/hooks/load-fin-core-config.ts"]
-    },
-    "UserPromptSubmit": {
-      "command": "bash",
-      "args": [".claude/hooks/skill-activation-prompt.sh", "{prompt}"]
-    },
-    "PostToolUse": {
-      "command": "bun",
-      "args": [".claude/hooks/post-tool-use-tracker.ts", "{tool_name}", "{result}"]
-    },
-    "Stop": {
-      "command": "bash",
-      "args": [".claude/hooks/run-tests.sh"]
-    }
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "npx tsx $CLAUDE_PROJECT_DIR/.claude/hooks/load-fin-core-config.ts"
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/skill-activation-prompt.sh"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Edit|MultiEdit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/post-tool-use-tracker.ts"
+          }
+        ]
+      }
+    ]
   }
 }
 ```
 
 If hooks are missing, they should have been created during setup. Check `.claude/hooks/` exists.
+
+**Note**: Hooks use the newer array-based format with `$CLAUDE_PROJECT_DIR` environment variable for portability.
 
 ---
 
@@ -404,6 +462,8 @@ After onboarding, activate the Finance Orchestrator:
 *market-research  # Market Researcher
 ```
 
+**About Skills**: The `/finance-orchestrator` and other commands are "skills" - specialized Claude Code commands that activate Finance Guru agents. Skills are automatically discovered via hooks when you type their names. The full skill name is `/fin-guru:agents:finance-orchestrator`, but shortcuts work too.
+
 **Example workflows:**
 
 ```bash
@@ -443,6 +503,17 @@ Try these to verify everything works:
 ## Troubleshooting
 
 **Note**: This section covers common quick fixes. For comprehensive troubleshooting, see [TROUBLESHOOTING.md](TROUBLESHOOTING.md).
+
+### Common Issues Quick Reference
+
+| Problem | Quick Fix | Full Details |
+|---------|-----------|--------------|
+| Module not found | `uv sync --refresh` | [Python Tool Errors](#python-tool-errors) |
+| MCP not connected | Check `.claude/settings.json` and API keys | [MCP Server Issues](#mcp-server-issues) |
+| Hooks not running | Verify `.claude/hooks/` exists, run manually to test | [Hooks Not Running](#hooks-not-running) |
+| yfinance no data | Check internet, wait 5 min (rate limit) | [Python Tool Errors](#python-tool-errors) |
+| Onboarding crash | Delete `.onboarding-state.json` and restart | [Onboarding Wizard Errors](#onboarding-wizard-errors) |
+| Git can't pull | Add upstream remote, fetch, merge | [Git/Fork Issues](#gitfork-issues) |
 
 ### Python Tool Errors
 
@@ -631,6 +702,19 @@ For comprehensive troubleshooting coverage including:
 
 See the complete [Troubleshooting Guide](TROUBLESHOOTING.md).
 
+### Common Gotchas
+
+**First-time setup mistakes** that trip up new users:
+
+1. **Forgetting to fork** - Always fork the repository first, don't clone the original directly
+2. **Skipping onboarding** - Run `/fin-guru:agents:onboarding-specialist` before using Finance Guru
+3. **Missing .env file** - Copy `.env.example` to `.env` (setup.sh does this automatically)
+4. **Wrong Python version** - Must be 3.12+, check with `python --version`
+5. **Not configuring MCP servers** - At minimum, configure exa, bright-data, and sequential-thinking
+6. **Using commands outside project directory** - Always `cd family-office` before running CLI tools
+7. **Expecting instant market data** - yfinance can be slow/rate-limited, be patient
+8. **Committing private data** - Always verify with `git status --ignored` before pushing
+
 ---
 
 ## Security Checklist
@@ -696,6 +780,40 @@ git merge upstream/main
 # Verify no conflicts with private data
 git status
 ```
+
+---
+
+## Post-Installation Checklist
+
+After running `setup.sh`, verify everything is working:
+
+```bash
+# ✅ 1. Python environment
+uv run python --version  # Should show 3.12+
+
+# ✅ 2. Directory structure
+ls -la fin-guru-private/  # Should exist (gitignored)
+ls -la notebooks/updates/  # Should exist (gitignored)
+ls -la fin-guru/data/user-profile.yaml  # Should exist (gitignored)
+
+# ✅ 3. Dependencies installed
+uv run python -c "import pandas, numpy, yfinance; print('OK')"  # Should print OK
+
+# ✅ 4. CLI tools work
+uv run python src/analysis/risk_metrics_cli.py AAPL --days 90  # Should output metrics
+
+# ✅ 5. Hooks configured
+cat .claude/settings.json | grep SessionStart  # Should show hook
+
+# ✅ 6. Environment file
+ls -la .env  # Should exist (gitignored)
+
+# ✅ 7. Git ignores working
+git check-ignore .env  # Should output ".env"
+git check-ignore fin-guru/data/user-profile.yaml  # Should output path
+```
+
+If all checks pass, you're ready to run onboarding!
 
 ---
 
