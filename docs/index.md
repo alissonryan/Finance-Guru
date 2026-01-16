@@ -8,6 +8,7 @@ Welcome to the Finance Guru documentation. This hub provides navigation to all t
 |----------|-------------|
 | [README](../README.md) | Project overview, quick start, architecture |
 | [Setup Guide](SETUP.md) | **Complete installation and configuration guide** |
+| [API Keys Guide](api-keys.md) | **How to obtain and configure API keys** |
 | [API Reference](api.md) | CLI tools documentation |
 | [Hooks System](hooks.md) | How hooks power auto-activation |
 | [Contributing](contributing.md) | How to contribute |
