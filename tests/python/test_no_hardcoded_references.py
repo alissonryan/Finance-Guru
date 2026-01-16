@@ -27,6 +27,7 @@ ALLOWED_FILES = {
     "specs/archive/",  # Archived specs
     "fin-guru-private/",  # Private data directory (not distributed)
     "notebooks/",  # Private notebooks (not distributed)
+    "docs/onboarding-flow-evaluation.md",  # Evaluation document referencing Ossie's setup
 }
 
 # Files that MUST NOT contain "Ossie"
