@@ -178,6 +178,81 @@ Once your profile is set up, activate the full Finance Guru system:
 *market-research  # "What's the momentum on NVDA?"
 ```
 
+## 🍴 Fork Model: Use Finance Guru Safely
+
+Finance Guru is designed to be **forked** and used privately. Here's how it works:
+
+### Architecture for Privacy
+
+```
+┌─────────────────────────────────────────┐
+│  Public Repository (GitHub)             │
+│  ✓ Tools, agents, templates             │
+│  ✓ Documentation                         │
+│  ✓ Sample configs                        │
+│  ✗ NO personal financial data            │
+└─────────────────────────────────────────┘
+           ↓ Fork & Clone
+┌─────────────────────────────────────────┐
+│  Your Local Fork                         │
+│  ✓ All public features                   │
+│  ✓ Your onboarding-generated configs     │
+│  ✓ Your portfolio data (gitignored)      │
+│  ✓ Your API keys (.env, gitignored)      │
+└─────────────────────────────────────────┘
+```
+
+### How to Use
+
+1. **Fork this repository** to your GitHub account
+2. **Clone to your machine** (never commit personal data)
+3. **Run onboarding** to generate your private configs
+4. **Pull upstream updates** safely (configs in .gitignore)
+
+### What's Tracked vs. Ignored
+
+**Tracked (safe to commit):**
+- ✅ Tools (`src/`, `scripts/`)
+- ✅ Agent definitions (`fin-guru/agents/`)
+- ✅ Templates (`scripts/onboarding/modules/templates/`)
+- ✅ Documentation (`docs/`, `README.md`)
+- ✅ Package files (`pyproject.toml`, `package.json`)
+
+**Ignored (private data):**
+- 🔒 `fin-guru/data/user-profile.yaml` (your financial data)
+- 🔒 `notebooks/updates/*.csv` (your account exports)
+- 🔒 `.env` (your API keys)
+- 🔒 `fin-guru-private/` (your private strategies)
+
+### Updating Your Fork
+
+```bash
+# Add upstream remote (one-time)
+git remote add upstream https://github.com/ORIGINAL-AUTHOR/family-office.git
+
+# Pull updates (safe - won't touch your private configs)
+git fetch upstream
+git merge upstream/main
+
+# Your private data stays untouched
+```
+
+### Security Checklist
+
+Before pushing to GitHub:
+
+```bash
+# Verify private files are ignored
+git status --ignored
+
+# Ensure no sensitive data in commit
+git diff --cached
+
+# Check .env is ignored
+ls -la .env  # Should show file exists locally
+git check-ignore .env  # Should output ".env" (confirmed ignored)
+```
+
 ## Project Structure
 
 ```
