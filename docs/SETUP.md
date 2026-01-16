@@ -442,6 +442,8 @@ Try these to verify everything works:
 
 ## Troubleshooting
 
+**Note**: This section covers common quick fixes. For comprehensive troubleshooting, see [TROUBLESHOOTING.md](TROUBLESHOOTING.md).
+
 ### Python Tool Errors
 
 **Problem**: `ModuleNotFoundError` when running CLI tools
@@ -617,6 +619,17 @@ claude
 # Finance Guru uses only ~25% of 200k context
 # If hitting limits, check for runaway hooks
 ```
+
+### Need More Help?
+
+For comprehensive troubleshooting coverage including:
+- Detailed diagnostics and fixes
+- Common error messages explained
+- Performance optimization
+- Git and privacy issues
+- MCP server debugging
+
+See the complete [Troubleshooting Guide](TROUBLESHOOTING.md).
 
 ---
 

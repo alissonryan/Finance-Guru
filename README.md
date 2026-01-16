@@ -386,6 +386,8 @@ ITC_API_KEY=your_key_here        # For ITC risk scores
 |----------|-------------|
 | [docs/index.md](docs/index.md) | Documentation hub |
 | [docs/SETUP.md](docs/SETUP.md) | **Complete setup guide** (start here) |
+| [docs/api-keys.md](docs/api-keys.md) | **API key acquisition guide** |
+| [docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md) | **Comprehensive troubleshooting** |
 | [docs/api.md](docs/api.md) | CLI tools reference |
 | [docs/hooks.md](docs/hooks.md) | Hooks system documentation |
 | [docs/contributing.md](docs/contributing.md) | Contribution guidelines |
