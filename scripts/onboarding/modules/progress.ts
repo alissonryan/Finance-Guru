@@ -12,6 +12,7 @@ export type SectionName =
   | 'cash_flow'
   | 'debt'
   | 'preferences'
+  | 'summary'
   | 'mcp_config'
   | 'env_setup';
 
@@ -176,6 +177,7 @@ export function getNextSection(state: OnboardingState): SectionName | null {
     'cash_flow',
     'debt',
     'preferences',
+    'summary',
     'mcp_config',
     'env_setup'
   ];
@@ -200,6 +202,7 @@ export function isComplete(state: OnboardingState): boolean {
     'cash_flow',
     'debt',
     'preferences',
+    'summary',
     'mcp_config',
     'env_setup'
   ];
