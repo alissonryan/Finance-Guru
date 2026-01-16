@@ -20,6 +20,8 @@ export interface UserData {
   // Investment portfolio
   portfolio_value?: number;
   brokerage?: string;
+  broker_type?: string;
+  broker_name?: string;
   has_retirement?: boolean;
   retirement_value?: number;
   allocation_strategy?: string;

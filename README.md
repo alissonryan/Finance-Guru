@@ -490,6 +490,12 @@ See [LICENSE](LICENSE) for the complete legal terms.
 
 For more on AGPLv3, see the [GNU project page](https://www.gnu.org/licenses/agpl-3.0.html).
 
+## Star History
+
+If you find Finance Guru useful, please ⭐ star the repo to help others discover it!
+
+[![Star History Chart](https://api.star-history.com/svg?repos=AojdevStudio/Finance-Guru&type=Date)](https://star-history.com/#AojdevStudio/Finance-Guru&Date)
+
 ---
 
 <p align="center">

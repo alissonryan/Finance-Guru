@@ -1,11 +1,21 @@
 ---
 name: PortfolioSyncing
-description: Import and sync Fidelity CSV portfolio data to Google Sheets DataHub. USE WHEN user mentions import fidelity OR sync portfolio OR update positions OR CSV import OR portfolio-sync OR working with Portfolio_Positions CSVs. Handles position updates, SPAXX/margin validation, safety checks, and formula protection.
+description: Import and sync broker CSV portfolio data to Google Sheets DataHub. Supports multiple brokers (Fidelity, Schwab, Vanguard, etc.). USE WHEN user mentions import broker data OR sync portfolio OR update positions OR CSV import OR portfolio-sync OR working with Portfolio_Positions CSVs. Handles position updates, SPAXX/margin validation, safety checks, and formula protection.
 ---
 
 # PortfolioSyncing
 
-Safely import Fidelity CSV position exports into the Google Sheets DataHub tab, ensuring data integrity, validating changes, and protecting sacred formulas.
+Safely import broker CSV position exports into the Google Sheets DataHub tab, ensuring data integrity, validating changes, and protecting sacred formulas.
+
+## Multi-Broker Support
+
+**Supported Brokers**:
+- ✅ **Fidelity** - Fully automated parsing
+- ⚠️ **Schwab, Vanguard, TD Ameritrade, E*TRADE, Robinhood** - Manual mapping required (coming soon)
+
+**Broker Detection**: Finance Guru automatically detects your broker from `user-profile.yaml` (set during onboarding). CSV parsing is tailored to your broker's format.
+
+**See**: `docs/broker-csv-export-guide.md` for detailed export instructions per broker.
 
 ## Workflow Routing
 
