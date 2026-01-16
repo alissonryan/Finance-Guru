@@ -97,6 +97,7 @@ scripts/*
 !scripts/rbp/
 scripts/rbp/*
 !scripts/rbp/test-runner.sh
+!scripts/qa/
 
 # Private session data and conversations
 .claude/data/sessions/
